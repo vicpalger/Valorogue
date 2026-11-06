@@ -1,0 +1,20 @@
+# Configuración local y credenciales
+.env
+.env.*
+!.env.example
+
+# Archivos temporales del sistema y del editor
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+*.log
+.vscode/
+.idea/
+
+# Dependencias y resultados locales de pruebas
+node_modules/
+coverage/
+playwright-report/
+test-results/

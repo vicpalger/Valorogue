@@ -1,0 +1,171 @@
+/* Adaptación por espacio disponible, sin escalar ni esconder controles esenciales. */
+:root{--topbar-height:76px}
+html{min-width:240px}
+body{min-width:0;min-height:100dvh}
+img,svg{max-width:100%}
+button,select,input{max-width:100%}
+button,summary,select{touch-action:manipulation}
+header{min-width:0;min-height:64px;height:var(--topbar-default,76px);padding-left:max(12px,env(safe-area-inset-left));padding-right:max(12px,env(safe-area-inset-right))}
+body:not(.in-menu){height:100dvh;min-height:0;overflow:hidden}
+body:not(.in-menu) main{height:calc(100dvh - var(--topbar-height));min-height:0;margin:0;padding:0}
+body:not(.in-menu) .arena{height:100%;min-height:0;max-height:none}
+#play-area{height:100%;min-height:0}
+.arena canvas{display:block;width:100%;height:100%;touch-action:none}
+body.in-menu main{min-width:0}
+#lobby,#menu-content,.home-loadout,.home-heading,.agent-profile,.agent-identity{min-width:0}
+.home-weapon-heading h2,.home-agent-picker,.loadout-skill summary>span{overflow-wrap:anywhere}
+#menu-dialog,#agent-info-dialog{width:min(1100px,calc(100vw - 24px));max-width:calc(100vw - 24px);max-height:calc(100dvh - 24px);margin:auto;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin}
+#agent-info-dialog{width:min(520px,calc(100vw - 24px))}
+#menu-content,#agent-info-content{min-width:0}
+#menu-content .collection{grid-template-columns:repeat(auto-fit,minmax(min(225px,100%),1fr))}
+.agent-filters{gap:12px}.agent-filters label{max-width:100%;min-width:0}.agent-filters input,.agent-filters select{max-width:100%;width:100%;min-width:0}
+.agent-filters input{width:230px}
+.hero-card,.weapon-card,.progression-grid>article{min-width:0}
+#menu-content .hero-card p,#agent-info-content p,.progression-grid p{overflow-wrap:anywhere}
+.progression-tabs{flex-wrap:wrap}.progression-tabs button{min-width:0}
+.progression-grid select,.import-save input{width:min(100%,360px);min-width:0}
+.mastery-agent-art img{max-width:100%;object-fit:contain}
+/* Un solo sistema de medida para todos los iconos de mejora y artefacto. */
+:is(#lobby,#menu-content,.upgrade-panel) .upgrade-icon{aspect-ratio:1;flex-shrink:0;padding:6px}
+:is(#lobby,#menu-content,.upgrade-panel) .upgrade-icon img{width:100%;height:100%;max-width:100%;max-height:100%;object-fit:contain;aspect-ratio:1;image-rendering:pixelated}
+.panel .card>em{display:grid;place-items:center;font-style:normal;width:72px;height:72px;max-width:100%;margin:0 auto;background:#0f1e2a;border:1px solid #526a79;clip-path:var(--cut)}
+.panel .card>em img{width:64px;height:64px;max-width:90%;max-height:90%;object-fit:contain;image-rendering:pixelated}
+.menu-icon{object-fit:contain;flex-shrink:0}
+.wallet .currency-icon{flex-shrink:0;object-fit:contain}
+/* Todos los paneles pueden desplazarse verticalmente si la altura no alcanza. */
+.arena>.overlay{padding:clamp(10px,2.4vh,24px);overflow:auto;overscroll-behavior:contain;align-items:flex-start;scrollbar-width:thin}
+.overlay>.panel,.overlay>.panel.session-report{width:min(100%,1000px);max-width:100%;min-width:0;margin:auto;padding:clamp(16px,2.5vw,32px)}
+.overlay:has(.upgrade-panel){padding:clamp(10px,2.4vh,24px)}
+.overlay>.upgrade-panel{width:min(1200px,100%);min-height:min(700px,100%);margin:auto;display:flex;flex-direction:column;gap:0}
+.upgrade-panel h2{margin:0 0 20px;font-size:clamp(25px,3vw,44px)}
+.upgrade-panel .cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:0;flex:1;min-height:0}
+.upgrade-panel .card{min-height:0;display:grid;grid-template-columns:1fr;grid-template-rows:auto auto 1fr auto auto;gap:18px;padding:24px 18px;align-items:start;justify-items:start;text-align:left;overflow-wrap:anywhere}
+.upgrade-panel .card .upgrade-icon{width:104px;height:104px;justify-self:center;align-self:center}
+.upgrade-panel .card b{font-size:clamp(19px,1.8vw,26px);margin:0;line-height:1.25;display:block}
+.upgrade-panel .card small{font-size:clamp(13px,1.2vw,16px);line-height:1.55;margin:0}
+.upgrade-panel .upgrade-stat{padding:12px 8px;margin:0}.upgrade-panel .stat-label{font-size:10px;margin-bottom:8px;letter-spacing:.5px}.upgrade-panel .stat-change{font-size:18px;gap:8px}
+.upgrade-panel .pick-upgrade{padding:12px 8px;font-size:14px}
+#reroll-upgrades{align-self:center;max-width:100%;min-height:42px;margin-top:16px}
+.panel:not(.upgrade-panel) .cards{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.panel:not(.upgrade-panel) .card{min-width:0;padding:20px;overflow-wrap:anywhere}
+.panel:not(.upgrade-panel) .card b{display:block;margin:12px 0;font-size:20px}
+.panel:not(.upgrade-panel) .card small{font-size:14px;line-height:1.5}
+.session-report .report-heading>div{min-width:0}.session-report .report-heading h2{overflow-wrap:anywhere}
+.session-report .report-reward{display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px}
+.report-reward>span{min-width:0;display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.session-report .report-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.session-report .report-actions button{width:100%;min-width:0;margin:0}
+.report-detail-content>div{min-width:0}.report-detail-content span,.report-detail-content p{overflow-wrap:anywhere}
+.help-content{max-width:calc(100vw - 24px);max-height:calc(100dvh - var(--topbar-height) - 20px);overflow:auto}
+.help-controls>div{grid-template-columns:minmax(70px,100px) minmax(0,1fr)}
+/* Pantallas estrechas: los paneles conservan un tamaño legible. */
+@media(max-width:900px){
+ body.in-menu main{padding:14px;gap:14px}
+ #lobby .home-loadout>.hero-card{padding:12px;gap:12px}
+ #lobby .home-heading h1{font-size:clamp(22px,3vw,30px)}
+ .home-record{padding-left:10px}
+ .progression-grid>article{padding:18px}
+}
+@media(min-width:521px) and (max-width:760px){
+ body.in-menu main{grid-template-columns:154px minmax(0,1fr);gap:12px;padding:12px}
+ body.in-menu #navigation{padding:14px 8px}#navigation button{font-size:14px;padding:10px 8px;gap:8px}.menu-brand .brand{font-size:22px}.menu-brand{padding-left:4px;padding-right:4px}
+ #lobby .home-loadout{grid-template-columns:1fr;gap:12px}
+ #lobby .home-agent .agent-profile{grid-template-columns:100px minmax(0,1fr);gap:12px}.agent-stage{min-height:110px;max-height:none}
+ #lobby .home-agent>.hero-summary{grid-template-columns:repeat(3,minmax(0,1fr))}
+ #lobby .home-weapon-art{min-height:90px;max-height:110px}
+ .home-briefing{flex-wrap:wrap}
+}
+@media(max-width:650px){
+ :root{--topbar-default:64px}
+ header{gap:8px;flex-wrap:nowrap}
+ .overlay>.panel:not(.upgrade-panel),.overlay>.panel.session-report{padding:18px}
+ .panel:not(.upgrade-panel) .cards{grid-template-columns:1fr}
+ .panel:not(.upgrade-panel) .card{display:grid;grid-template-columns:64px minmax(0,1fr);gap:8px 16px;padding:16px;text-align:left}
+ .panel:not(.upgrade-panel) .card>em{grid-row:1/3;width:64px;height:64px}
+ .panel:not(.upgrade-panel) .card b{margin:0;font-size:18px}.panel:not(.upgrade-panel) .card small{font-size:13px}
+ .upgrade-panel .cards{grid-template-columns:1fr;gap:12px}
+ .overlay>.upgrade-panel{min-height:0}
+ .upgrade-panel .card{grid-template-columns:64px minmax(0,1fr);grid-template-rows:auto auto auto;gap:10px 14px;padding:16px}
+ .upgrade-panel .card .upgrade-icon{grid-column:1;grid-row:1/3;width:64px;height:64px}
+ .upgrade-panel .card b{grid-column:2;font-size:19px}.upgrade-panel .card small{grid-column:2;font-size:13px}
+ .upgrade-panel .card .upgrade-stat{grid-column:1/-1;grid-row:3}.upgrade-panel .card .pick-upgrade{grid-column:1/-1;grid-row:4;padding:10px;font-size:13px}
+ .upgrade-panel .stat-change{font-size:17px}.upgrade-panel h2{margin-bottom:16px}
+ .session-report .report-actions{grid-template-columns:1fr}
+ .session-report .report-heading{gap:10px}.session-report .report-heading h2{font-size:clamp(24px,5vw,34px)}.session-report .report-symbol{width:40px;height:40px;flex-basis:40px;font-size:25px}
+ .hud>.survival-hud{max-width:52%;padding:8px}.hud .stats{width:46%;max-width:46%}
+ .combat-hud{bottom:max(10px,env(safe-area-inset-bottom));left:max(10px,env(safe-area-inset-left));right:max(10px,env(safe-area-inset-right))}
+}
+@media(max-width:520px){
+ body.in-menu main{padding:10px;gap:12px}
+ #lobby .home-heading h1{font-size:clamp(18px,5.5vw,25px)}
+ .home-heading{gap:8px}.home-record{font-size:7px;padding-left:7px}.home-record strong{font-size:19px}
+ #lobby .home-loadout{gap:8px}
+ #lobby .home-loadout>.hero-card{padding:9px;gap:10px}
+ .home-agent-picker{grid-template-columns:1fr}.home-agent-picker select{font-size:12px}
+ #lobby .home-weapon-specs{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .home-weapon-specs>div{padding:6px 4px}.home-weapon-specs dd{font-size:16px}.home-weapon-specs dt{font-size:7px;overflow-wrap:anywhere}
+ .home-weapon-heading h2{font-size:clamp(18px,5.4vw,24px)}.home-weapon-heading>span{font-size:8px}
+ #agent-grid .agent-collection-card{min-height:240px;padding:18px}
+ .progression-grid>article{padding:14px}.progression-grid h2{font-size:22px}
+ #menu-dialog{padding:16px}.agent-filters label{flex:1 1 120px}.agent-filters input{width:100%}
+ .help-dropdown>summary{font-size:10px;padding:8px}.help-dropdown>summary>span{display:none}
+ .wallet>strong{font-size:15px}.wallet .currency-icon{width:22px;height:22px;flex-basis:22px}
+ .report-detail-content>div{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+}
+/* Ventanas bajas y orientación horizontal: HUD en una fila y menús compactos. */
+@media(max-height:650px) and (min-width:651px){
+ body.in-menu main{padding:12px;gap:16px}
+ body.in-menu #navigation{padding:12px}
+ .menu-brand{padding-bottom:12px;margin-bottom:0}.menu-brand .brand{font-size:23px}.menu-brand .tag{margin-top:8px;font-size:8px}
+ #navigation button,#navigation button[data-tab="jugar"]{min-height:36px;padding:8px 10px;margin-bottom:0;font-size:15px}#navigation button[data-tab="jugar"]{min-height:48px;font-size:21px}
+ .nav-collection{display:none}
+ body.in-menu #lobby{gap:10px}#lobby .home-loadout>.hero-card{padding:12px;gap:10px}
+ #lobby .agent-stage{min-height:70px;max-height:110px}#lobby .agent-stage .pixel-portrait.large img{width:88px;height:88px}
+ .agent-profile{gap:10px}.agent-identity h2{font-size:26px;margin-bottom:12px}.loadout-skill summary{min-height:34px;padding:6px;font-size:12px}.skills-label{display:none}
+ #lobby .home-agent .hero-summary>span{padding:7px;font-size:9px}#lobby .home-agent .hero-summary strong{font-size:18px}.home-agent-picker select{min-height:36px;padding:7px;font-size:13px}
+ .home-heading{padding:0}#lobby .home-heading h1{font-size:28px}.home-record strong{font-size:22px}.home-briefing{padding-top:8px;font-size:8px}
+ #lobby .home-weapon-art{min-height:55px;max-height:85px}#lobby .home-weapon-art img{height:70px}.home-weapon-heading h2{font-size:25px}.home-weapon-specs>div{padding:7px}.home-weapon-specs dd{font-size:18px}
+ #lobby .home-loadout .loadout-action{min-height:36px;padding:8px;font-size:14px}
+ .hud{top:8px;left:10px;right:10px}.hud>.survival-hud{width:240px;padding:8px}.survival-heading{margin-bottom:5px}.survival-hud .level{margin-top:5px;font-size:7px}
+ .combat-hud{grid-template-columns:minmax(160px,1fr) repeat(2,minmax(170px,1fr));grid-template-rows:auto;width:min(710px,calc(100% - 20px));right:10px;bottom:10px;gap:5px}
+ .combat-hud .weapon-hud{grid-column:1;grid-row:1;padding:10px;gap:5px}.combat-hud .weapon-hud>strong{font-size:14px}.combat-hud #weapon-ammo{font-size:17px}.combat-hud #weapon-state{font-size:8px;line-height:1.4}
+ .combat-hud .ability-hud{grid-row:1!important;min-height:62px;padding:8px 9px 12px;gap:6px}.combat-hud #ability{grid-column:2}.combat-hud #ultimate{grid-column:3}.combat-hud .ability-hud strong{font-size:12px}.combat-hud .ability-hud small{font-size:8px}.combat-hud .ability-hud kbd{width:24px;height:24px;flex-basis:24px;font-size:12px}
+ .overlay>.upgrade-panel{min-height:0;padding:16px}.upgrade-panel h2{font-size:28px;margin-bottom:14px}.upgrade-panel .cards{gap:12px}.upgrade-panel .card{gap:10px;padding:14px}.upgrade-panel .card .upgrade-icon{width:60px;height:60px}.upgrade-panel .card b{font-size:18px}.upgrade-panel .card small{font-size:12px}.upgrade-panel .stat-change{font-size:16px}.upgrade-panel .stat-label{font-size:9px;margin-bottom:5px}.upgrade-panel .pick-upgrade{font-size:12px;padding:8px}.upgrade-panel .upgrade-stat{padding:8px}.upgrade-panel #reroll-upgrades{margin-top:10px;min-height:36px;font-size:12px}
+ .session-report .report-heading{padding-bottom:12px}.session-report .report-heading h2{font-size:32px}.session-report .report-stats{margin:12px 0}.session-report .report-stats>div{padding:10px}.session-report .report-stats dd{font-size:22px}.session-report .report-reward{padding:10px}.session-report .report-actions{margin-top:12px;padding-top:12px}.expanded-stats{margin-top:12px}
+}
+@media(max-height:650px) and (max-width:650px){
+ .menu-brand .brand{font-size:17px}.menu-brand{padding-bottom:3px}body.in-menu #navigation{padding:8px;gap:5px}#navigation button,#navigation button[data-tab="jugar"]{min-height:33px;padding:5px;font-size:10px}
+ body.in-menu #lobby{gap:9px}.home-briefing{display:none}
+ #lobby .agent-stage{min-height:46px;max-height:64px}#lobby .agent-stage .pixel-portrait.large img{width:56px;height:56px}
+ .agent-profile{gap:8px}.agent-identity h2{font-size:22px;margin-bottom:8px}.loadout-skill summary{font-size:10px;min-height:30px;padding:4px;gap:4px}.loadout-skill kbd{height:18px;flex-basis:16px;font-size:9px}
+ #lobby .home-agent .hero-summary>span{padding:4px}.home-agent-picker select{min-height:32px;padding:6px;font-size:11px}.home-agent-picker{font-size:7px}
+ #lobby .home-weapon-art{min-height:44px;max-height:65px}#lobby .home-weapon-art img{height:48px}.home-weapon-heading{gap:4px}#lobby .home-weapon>.home-weapon-hint{font-size:8px}#lobby .home-loadout .loadout-action{font-size:11px;min-height:32px;padding:5px}
+ .home-weapon-specs>div{padding:5px 3px}.home-weapon-specs dd{font-size:14px}.home-weapon-specs dt{font-size:6px}
+}
+@media(max-width:360px){
+ .wallet{gap:5px}.wallet>strong{font-size:13px}.wallet .currency-short{font-size:10px}header{gap:6px}.help-dropdown>summary{font-size:9px;padding:7px}
+ .home-record{display:none}#lobby .home-heading .eyebrow{font-size:7px}
+ .combat-hud .ability-hud strong{font-size:10px}.combat-hud .ability-hud small{font-size:7px}.combat-hud .ability-hud{gap:5px;padding-left:7px;padding-right:7px}
+ .survival-heading #xp-text{font-size:6px}.survival-hud .level{font-size:6px}
+ .upgrade-panel .card{grid-template-columns:48px minmax(0,1fr);padding:12px;gap:8px 10px}.upgrade-panel .card .upgrade-icon{width:48px;height:48px}.upgrade-panel .card b{font-size:17px}
+ .session-report .report-stats{gap:6px}.session-report .report-stats dt{font-size:8px}.session-report .report-stats dd{font-size:18px}
+}
+@media(hover:none){button,summary{min-height:36px}.agent-info-button{min-height:36px!important;min-width:36px!important}}
+@media(min-width:2200px){body.in-menu main{padding:32px 3vw;gap:32px}#lobby .home-loadout{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)}#lobby .home-loadout>.hero-card{padding:32px;gap:28px}.home-heading{padding:12px 0}.home-heading h1{font-size:54px!important}#lobby .agent-stage .pixel-portrait.large img{width:240px;height:240px}.agent-identity h2{font-size:64px}.home-weapon-art img{width:480px;height:180px}.combat-hud{right:28px;bottom:28px}.hud{top:24px;left:28px;right:28px}}
+@media(min-width:521px) and (max-width:760px){
+ #lobby .home-weapon-art{min-height:64px;max-height:90px}
+ .home-briefing{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;font-size:7px;line-height:1.5}
+ .home-briefing>span{display:flex;flex-direction:column;align-items:flex-start;gap:4px}.home-briefing b{font-size:18px;line-height:1}
+}
+@media(max-height:500px) and (min-width:440px) and (max-width:650px){
+ .combat-hud{grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:auto;gap:4px}
+ .combat-hud .weapon-hud{grid-column:1;grid-row:1;align-content:center;padding:8px;gap:4px;grid-template-columns:1fr}
+ .combat-hud .weapon-hud>strong{font-size:12px}.combat-hud #weapon-ammo{font-size:15px;grid-column:1}.combat-hud #weapon-state{font-size:7px;grid-column:1}
+ .combat-hud .ability-hud{grid-row:1!important;padding:7px 6px 12px;min-height:62px;gap:5px}.combat-hud #ability{grid-column:2}.combat-hud #ultimate{grid-column:3}
+ .combat-hud .ability-hud strong{font-size:10px}.combat-hud .ability-hud small{font-size:7px}.combat-hud .ability-hud kbd{width:20px;height:20px;flex-basis:20px;font-size:11px}
+}
+@media(max-width:300px){
+ .progression-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.progression-tabs button{padding:8px 4px;font-size:11px}
+ .progression-grid .mission{grid-template-columns:minmax(0,1fr);gap:8px}.progression-grid .mission>strong,.progression-grid .mission>progress,.progression-grid .mission>span,.progression-grid .mission>button{grid-column:1;min-width:0}.progression-grid .mission>strong{grid-row:1}.progression-grid .mission>progress{grid-row:2}.progression-grid .mission>span{grid-row:3}.progression-grid .mission>button{grid-row:4;width:100%;min-width:0}
+ .progression-grid>article{padding:10px}.progression-grid h2{font-size:20px;overflow-wrap:anywhere}
+}

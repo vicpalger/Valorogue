@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Última chispa · Roguelike</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="tactical.css">
+    <link rel="stylesheet" href="home.css">
+    <link rel="stylesheet" href="visual-refresh.css">
+    <link rel="stylesheet" href="responsive.css">
+    <link rel="stylesheet" href="hud-layout.css">
+</head>
+
+<body>
+    <header><span class="header-mark"><span class="chispa-mark" aria-hidden="true"></span>CHISPA <small>CONTROL DE OPERACIONES</small></span><span id="session-mode" class="session-mode" hidden title="Desbloqueo temporal: desaparece al recargar">KONAMI</span><span id="wallet" class="wallet"></span><button id="home">Menú</button><button id="pause"
+            title="Pausar (Esc o P)">Pausar</button><details id="how-to-play" class="help-dropdown"><summary><span aria-hidden="true">?</span> Cómo jugar</summary><div class="help-content"><h2>Cómo jugar</h2><dl class="help-controls"><div><dt>WASD / Flechas</dt><dd>Mover al agente</dd></div><div><dt>Ratón / Clic</dt><dd>Apuntar y disparar. Mantén clic con las automáticas; Bulldog y Stinger disparan ráfagas por clic.</dd></div><div><dt>Clic derecho</dt><dd>Classic: triple disparo con dispersión aleatoria.</dd></div><div><dt>E</dt><dd>Activar la habilidad del agente</dd></div><div><dt>X</dt><dd>Definitiva: se carga con eliminaciones.</dd></div><div><dt>R</dt><dd>Recargar el arma</dd></div><div><dt>Esc / P</dt><dd>Pausar o continuar</dd></div></dl><p>Sobrevive tres fases de 5 minutos. Al final de cada fase derrota al jefe y elige un artefacto. El cronómetro de fase se detiene durante el jefe. Recoge XP para subir de nivel; puedes cambiar las opciones tres veces por partida.</p><p>Orbe verde: cura un 10 % de vida. Bomba: elimina enemigos en pantalla. Imán: atrae la experiencia.</p><p>Las compras son permanentes; las mejoras de nivel duran una partida. Abandonar reduce a la mitad los créditos de esa partida.</p></div></details></header>
+    <main>
+        <nav id="navigation" aria-label="Menú principal"></nav><section id="lobby"></section><div id="play-area">
+        <section class="arena"><canvas id="game"
+                aria-label="Arena de juego: moverse con WASD o flechas, apuntar con el ratón y clic para disparar y R para recargar"
+                tabindex="0"></canvas>
+            <div class="hud">
+                <div class="survival-hud"><div class="survival-heading"><span class="label">INTEGRIDAD</span><span id="xp-text"></span></div>
+                    <div id="health" role="progressbar" aria-label="Vida"><div id="health-fill"></div><span id="health-text"></span></div><div class="xp"><div id="xpbar"></div></div><div class="level" id="level"></div>
+                </div>
+                <div id="boss-status" class="boss-status" hidden><strong id="boss-name"></strong><div id="boss-health" role="progressbar" aria-label="Vida del jefe" aria-valuemin="0"><span id="boss-fill"></span></div></div><div class="stats"><span id="wave"></span><span id="kills"></span><span id="time"></span><span id="run-coins"></span></div>
+            </div>
+            <div id="overlay" class="overlay"></div>
+            <div class="combat-hud" aria-label="Arma y habilidades"><div id="weapon-hud" class="weapon-hud"><strong id="weapon-name"></strong><span id="weapon-ammo"></span><small id="weapon-state"></small></div>
+            <button id="ultimate" class="ability-hud ultimate-hud" title="Definitiva (X)"><kbd>X</kbd><span><strong id="ultimate-name"></strong><small id="ultimate-state"></small></span><span id="ultimate-progress" class="ability-progress" role="progressbar" aria-label="Carga de definitiva" aria-valuemin="0"><span id="ultimate-fill"></span></span></button>
+            <button id="ability" class="ability-hud" title="Usar habilidad (E)"><kbd>E</kbd><span><strong id="ability-name"></strong><small id="ability-state"></small></span><span class="ability-progress"><span id="ability-fill"></span></span></button></div>
+        </section>
+
+        </div>
+    </main>
+    <dialog id="menu-dialog" aria-label="Panel del menú"><button id="close-panel" class="close-panel">✕ Cerrar</button><section id="menu-content"></section></dialog>
+    <dialog id="agent-info-dialog" aria-labelledby="agent-info-title"><button id="close-agent-info" class="close-panel" type="button" aria-label="Cerrar información del agente">✕ Cerrar</button><section id="agent-info-content"></section></dialog>
+    <p id="save-status" role="status"></p>
+    <script src="agents.js"></script>
+    <script src="pixel-art.js"></script>
+    <script src="maps.js"></script>
+    <script src="terrain.js"></script>
+    <script src="abilities.js"></script>
+    <script src="weapons.js"></script>
+    <script src="weapon-art.js"></script>
+    <script src="ultimates.js"></script>
+    <script src="expansion.js"></script>
+    <script src="combat-art.js"></script>
+    <script src="game.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,84 @@
+/* Unificación visual: solo presentación. */
+/* El agente descansa en una plataforma; el equipo conserva sus controles. */
+#lobby .agent-stage{background:radial-gradient(ellipse at 50% 65%,#46647733,transparent 65%),linear-gradient(160deg,#263d4d80,#0b192422);border:0;border-bottom:1px solid #405967}
+#lobby .agent-stage::before{width:75%;height:25%;bottom:14%;transform:perspective(180px) rotateX(55deg);border:2px solid var(--rarity);box-shadow:0 0 0 10px #8ba6b10a,0 0 0 22px #8ba6b106;opacity:.5}
+#lobby .agent-stage::after{content:"";position:absolute;left:50%;top:10%;height:55%;width:1px;background:linear-gradient(transparent,var(--rarity),transparent);opacity:.15;pointer-events:none}
+#lobby .agent-stage .pixel-portrait.large img{width:192px;height:192px;transform:translateY(-8px);filter:drop-shadow(0 15px 0 #06121a55)}
+#lobby .stage-caption{bottom:14px;letter-spacing:2px}
+#lobby .home-weapon-art{border:0;border-bottom:1px solid #405967;background:radial-gradient(ellipse,#34536222,transparent 75%)}
+#lobby .home-weapon-specs{border:0;gap:8px 0}
+#lobby .home-weapon-specs>div{border:0;border-left:1px solid var(--line);background:transparent}
+#lobby .home-agent>.hero-summary{border:0;border-top:1px solid var(--line)}
+#lobby .home-loadout>.hero-card{background:linear-gradient(145deg,#172a37,#101d29);border-top-width:2px}
+/* Tarjetas de colección: retrato, nombre, rareza y acción. */
+#agent-grid .agent-collection-card{min-height:290px;padding:22px;gap:14px;background:linear-gradient(150deg,#182b39,#101d28);border:1px solid #3d5361;border-top:2px solid var(--rarity);box-shadow:none;clip-path:var(--cut)}
+#agent-grid .agent-collection-card>.pixel-portrait{width:126px;height:126px;background:radial-gradient(ellipse at 50% 80%,#65809322,transparent 75%);border:0;box-shadow:none;align-self:center;margin:4px 0 8px;clip-path:none}
+#agent-grid .agent-collection-card>.pixel-portrait img{width:104px;height:104px;object-fit:contain;filter:drop-shadow(0 7px 0 #07131c55)}
+#agent-grid .agent-collection-card h2{font-size:26px;margin:0;letter-spacing:1px}
+#agent-grid .agent-collection-card small{font:10px monospace;color:var(--muted)}
+#agent-grid .agent-collection-card.locked{opacity:1}#agent-grid .agent-collection-card.locked>.pixel-portrait{opacity:.55}
+#agent-grid .agent-collection-card>button[data-equip]{padding:12px 14px;min-height:42px}
+/* Los iconos mantienen su proporción dentro del mismo marco. */
+:is(#lobby,#menu-content,.upgrade-panel) .upgrade-icon{background:radial-gradient(ellipse at 50% 70%,#4b657a33,transparent 75%),#0f1e2a;border:1px solid #526a79;box-shadow:inset 0 0 0 4px #0b182533}
+:is(#lobby,#menu-content,.upgrade-panel) .upgrade-icon img{object-fit:contain;image-rendering:pixelated;max-width:82%;max-height:82%;aspect-ratio:1}
+/* Progreso: navegación por pestañas. */
+.progression-tabs{display:flex;gap:8px;margin:22px 0 0;border-bottom:1px solid var(--line);padding-bottom:10px}
+.progression-tabs button{flex:1;padding:12px 16px;font-size:14px;color:var(--muted);background:#142532;border:1px solid #3e5564}
+.progression-tabs button[aria-selected="true"]{border-color:var(--coral);color:var(--ivory);background:#ff586516}
+.progression-tabs button:focus-visible{outline:2px solid var(--ice);outline-offset:2px}
+.progression-grid{display:block;margin-top:18px}
+.progression-grid>article{padding:24px;min-height:300px;border:1px solid #3e5564;background:#132431}
+.progression-grid .mission{grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:12px;padding:18px 0}
+.progression-grid .mission>strong{grid-column:1}.progression-grid .mission>progress{grid-column:1;grid-row:2}.progression-grid .mission>span{grid-column:2;grid-row:2}.progression-grid .mission>button{grid-column:3;grid-row:1/3;min-width:130px}
+.mastery-agent-art{float:right;margin:0 0 20px 24px}.mastery-agent-art>.pixel-portrait.large{width:144px;height:144px;margin:0;background:linear-gradient(150deg,#2d495c,#142432);border:1px solid #607887;box-shadow:none;clip-path:var(--cut)}
+.mastery-agent-art img{width:112px;height:112px}
+#progression-panel-agente .mastery-progress{max-width:65%}
+/* Vida y XP juntas; munición y habilidades en un único bloque. */
+.hud{top:16px;left:18px;right:18px;align-items:start;pointer-events:none}
+.hud>.survival-hud{width:272px;max-width:42%;padding:14px;background:#0b1723ed;border:1px solid #3b5363;border-top:2px solid var(--ice);clip-path:var(--cut)}
+.survival-heading{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}.survival-heading .label{margin:0;font:9px monospace;letter-spacing:1px}.survival-heading #xp-text{font:9px monospace;color:var(--ice)}
+.survival-hud #health{width:100%;max-width:none;height:24px;margin:0;background:#263743;border:0}.survival-hud #health-text{font:700 12px/24px monospace}
+.survival-hud .xp{position:static;inset:auto;width:100%;height:5px;margin-top:8px;border:0;background:#293b48}.survival-hud #xpbar{background:var(--ice);height:100%}
+.survival-hud .level{position:static;inset:auto;max-width:100%;margin-top:8px;padding:0;border:0;background:none;clip-path:none;font:8px/1.6 monospace;color:var(--muted);letter-spacing:.3px}
+.hud .stats{max-width:50%;gap:0;background:#0b1723ed;border:1px solid var(--line);clip-path:var(--cut)}
+.hud .stats span{font:10px monospace;padding:10px 12px;background:none}
+.combat-hud{position:absolute;right:18px;bottom:18px;display:grid;grid-template-columns:minmax(190px,1fr) minmax(230px,1.1fr);grid-template-rows:auto auto;gap:6px;width:min(560px,calc(100% - 36px));pointer-events:none;z-index:1}
+.combat-hud .weapon-hud{position:relative;inset:auto;grid-column:1;grid-row:1/3;min-width:0;max-width:none;margin:0;padding:14px;grid-template-columns:1fr auto;align-content:center;gap:10px;border:1px solid #4a6373;border-left:3px solid var(--ice);clip-path:var(--cut)}
+.combat-hud .weapon-hud>strong{font-size:17px}.combat-hud #weapon-ammo{font-size:22px}.combat-hud #weapon-state{font-size:10px;line-height:1.5;overflow-wrap:anywhere}
+.combat-hud .ability-hud{position:relative;inset:auto;grid-column:2;min-width:0;max-width:none;width:100%;margin:0;min-height:60px;gap:10px;padding:10px 12px 14px;pointer-events:auto;box-shadow:none}
+.combat-hud #ability{grid-row:1}.combat-hud #ultimate{grid-row:2}
+.combat-hud .ability-hud strong{font-size:14px}.combat-hud .ability-hud small{font-size:9px}.combat-hud .ability-hud kbd{width:28px;height:28px;flex-basis:28px;font-size:14px}
+.combat-hud .ability-progress{left:12px;right:12px;bottom:5px}
+.combat-hud .weapon-hud.evolved{border-left-color:#ffb078}
+/* Informe final: resultado, recompensa y detalles opcionales. */
+.session-report.report-won{border-top-color:var(--ice)}
+.session-report.report-won .report-symbol{color:var(--ice);border-color:#8ce0df66;background:#8ce0df11}
+.session-report .report-heading h2{font-size:clamp(32px,4vw,54px)}
+.session-report .report-stats{grid-template-columns:repeat(3,minmax(0,1fr));margin:20px 0}
+.session-report .report-reward{padding:18px;background:#182c38;border:1px solid var(--line);gap:20px}
+.session-report .report-reward strong{font:700 24px "Arial Narrow",sans-serif;color:var(--ice)}
+.session-report .report-reward>span:last-child strong{color:var(--ivory)}
+.session-report .report-actions{margin-top:20px;padding-top:18px}
+.expanded-stats{margin-top:20px;padding-top:0;border:1px solid var(--line);font-size:13px}
+.expanded-stats>summary{display:flex;justify-content:space-between;cursor:pointer;padding:14px 16px;color:var(--ivory);background:#142634;list-style:none}
+.expanded-stats>summary::-webkit-details-marker{display:none}.expanded-stats[open]>summary>span{transform:rotate(45deg)}
+.expanded-stats .report-detail-content{display:block;padding:16px}
+.report-detail-content>div{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.report-detail-content>p{font:12px/1.6 "Segoe UI",sans-serif;color:var(--muted)}
+@media(min-width:1101px) and (max-height:800px){#lobby .agent-stage .pixel-portrait.large img{width:156px;height:156px}}
+@media(min-width:521px) and (max-width:1100px){#lobby .agent-stage .pixel-portrait.large img{width:110px;height:110px;transform:translateY(-3px)}#lobby .stage-caption{display:none}}
+@media(max-width:650px){
+ .hud{top:10px;left:10px;right:10px;gap:8px}.hud>.survival-hud{width:52%;max-width:52%;padding:10px}.survival-heading{gap:5px}.survival-heading .label,.survival-heading #xp-text{font-size:7px}.survival-hud .level{font-size:7px;letter-spacing:0}.survival-hud #health-text{font-size:10px}
+ .hud .stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:46%;max-width:46%;align-self:start}.hud .stats span{padding:7px 5px;font-size:8px;text-align:center;border:0}
+ .combat-hud{left:10px;right:10px;bottom:10px;width:auto;grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:auto auto;gap:6px}
+ .combat-hud .weapon-hud{grid-column:1/-1;grid-row:1;padding:10px 12px;gap:6px;min-height:0}.combat-hud .weapon-hud>strong{font-size:15px}.combat-hud #weapon-ammo{font-size:18px}.combat-hud #weapon-state{font-size:8px}
+ .combat-hud .ability-hud{grid-row:2!important;min-height:58px;padding:8px 9px 14px;gap:7px}.combat-hud #ability{grid-column:1}.combat-hud #ultimate{grid-column:2}.combat-hud .ability-hud strong{font-size:11px}.combat-hud .ability-hud small{font-size:8px}.combat-hud .ability-hud kbd{width:23px;height:23px;flex-basis:23px;font-size:12px}
+ .progression-tabs{gap:5px;margin-top:16px}.progression-tabs button{font-size:12px;padding:10px 5px}.progression-grid>article{padding:16px;min-height:0}.progression-grid .mission{grid-template-columns:1fr auto;gap:10px}.progression-grid .mission>strong{grid-column:1/-1}.progression-grid .mission>progress{grid-column:1/-1;grid-row:2}.progression-grid .mission>span{grid-column:1;grid-row:3}.progression-grid .mission>button{grid-column:2;grid-row:3;min-width:100px}
+ .mastery-agent-art{float:none;margin:0 0 18px;display:flex;justify-content:center}#progression-panel-agente .mastery-progress{max-width:100%}
+ .session-report .report-reward{padding:12px;gap:12px;flex-direction:row;flex-wrap:wrap}.session-report .report-reward strong{font-size:20px}.session-report .report-stats{gap:8px}.session-report .report-stats>div{padding:10px 8px}.session-report .report-stats dd{font-size:21px}.report-detail-content>div{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:520px){#lobby .agent-stage .pixel-portrait.large img{width:96px;height:96px;transform:translateY(-2px)}#lobby .stage-caption{display:none}#lobby .agent-stage::before{width:60%;bottom:12%;height:22%}#agent-grid .agent-collection-card{min-height:260px}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}.expanded-stats>summary>span{transition:none}}
+/* Los paneles de pausa, mejora y resultado cubren también el bloque de combate. */
+.arena>.overlay{z-index:10}
+.arena>.hud{z-index:2}

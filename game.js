@@ -14,7 +14,7 @@ function resize() {
         const sx=W/oldW,sy=H/oldH,seen=new Set();
         const reposition=item=>{if(!item||seen.has(item))return;seen.add(item);if(Number.isFinite(item.x))item.x*=sx;if(Number.isFinite(item.y))item.y*=sy;};
         reposition(player);[enemies,bullets,gems,pickups,particles,skillEffects,soulOrbs,enemyShots,attackWarnings].forEach(list=>list.forEach(reposition));
-        if(player){reposition(player.anchor);reposition(player.ultRevive);}
+        if(player){reposition(player.anchor);reposition(player.qAnchor);reposition(player.ultRevive);}
         for(const warning of attackWarnings){if(Number.isFinite(warning.tx))warning.tx*=sx;if(Number.isFinite(warning.ty))warning.ty*=sy;}
         mouse.x=Math.max(0,Math.min(W,mouse.x*sx));mouse.y=Math.max(0,Math.min(H,mouse.y*sy));
         buildTerrain();
@@ -25,9 +25,9 @@ function resize() {
 
 new ResizeObserver(resize).observe(canvas);
 new ResizeObserver(entries=>{const height=Math.ceil(entries[0].target.getBoundingClientRect().height);if(document.documentElement.style.getPropertyValue('--topbar-height')!==height+'px')document.documentElement.style.setProperty('--topbar-height',height+'px');}).observe(document.querySelector('header'));
-function panel(title, body, button, action) { overlay.classList.remove('hidden'); overlay.innerHTML = `<div class="panel report-${state}"><span class="eyebrow">${state === 'won' ? 'OPERACIÓN COMPLETADA / VICTORIA' : state === 'dead' ? 'OPERACIÓN FINALIZADA / DERROTA' : 'CHISPA / CONTROL'}</span><h2>${title}</h2><p>${body}</p><button class="primary">${button}</button></div>`; overlay.querySelector('button').onclick = action; }
-function start() { konamiBuffer=[]; pendingUpgrade = false; pendingArtifact = false; completedPhases = 0; showGame(); runCoins = 0; rewardPaid = false; keys.clear(); player = { x: W / 2, y: H / 2, r: 12, hp: 100, max: 100, speed: 210, damage: 1, rate: .24, shots: 1, xp: 0, need: 6, level: 1, inv: 0, artifacts: [], pickupRadius: 100, range: 1, crit: 0, armor: 0 }; applyProgress(); resetWeapon(); resetAbilities(); resetUltimate(); resetExpansion(); buildTerrain(true); freeTerrainPosition(player); enemies = []; bullets = []; gems = []; pickups = []; particles = []; elapsed = 0; kills = 0; wave = 1; spawnClock = .6; fireClock = 0; mouse.down = false; shake = 0; state = 'playing'; overlay.classList.add('hidden'); ui.pause.textContent = 'Pausar'; canvas.focus(); updateHUD(); }
-function updateHUD() { document.getElementById('health-fill').style.width = `${player.hp / player.max * 100}%`; document.getElementById('health-text').textContent = `${Math.ceil(player.hp)} / ${player.max} PV`; ui.health.setAttribute('aria-valuemin', '0'); ui.health.setAttribute('aria-valuemax', player.max); ui.health.setAttribute('aria-valuenow', player.hp); document.getElementById('health-fill').style.background = player.hp / player.max <= .3 ? '#ff5865' : '#8ce0df'; ui.wave.textContent = `OLEADA ${wave}`; ui.kills.textContent = `${kills} BAJAS`; ui.time.textContent = `${Math.floor(elapsed / 60)}:${String(Math.floor(elapsed % 60)).padStart(2, '0')} / 15:00`; document.getElementById('run-coins').textContent = `KC ${runCoins}`; ui.level.textContent = `${terrainStyle.name.toUpperCase()} · NIVEL ${player.level} · FASE ${Math.min(3, completedPhases + 1)} / 3${player.artifacts.length ? ' · ' + player.artifacts.map(id => artifacts.find(a => a.id === id).icon).join(' ') : ''}`; document.getElementById('xp-text').textContent=`XP ${player.xp} / ${player.need}`; ui.xpbar.style.width = `${player.xp / player.need * 100}%`; updateAbilityHUD(); updateWeaponHUD(); updateUltimateHUD(); updateBossHUD(); }
+function panel(title, body, button, action) { overlay.classList.remove('hidden'); overlay.innerHTML = `<div class="panel report-${state}"><h2>${title}</h2><p>${body}</p><button class="primary">${button}</button></div>`; overlay.querySelector('button').onclick = action; }
+function start() { konamiBuffer=[]; pendingUpgrade = false; pendingArtifact = false; completedPhases = 0; showGame(); runCoins = 0; rewardPaid = false; keys.clear(); player = { x: W / 2, y: H / 2, r: 12, hp: 100, max: 100, speed: 210, damage: 1, rate: .24, shots: 1, xp: 0, need: 6, level: 1, inv: 0, artifacts: [], pickupRadius: 100, range: 1, crit: 0, armor: 0 }; applyProgress(); resetWeapon(); resetAbilities(); resetUltimate(); resetExpansion(); resetAgentBuild(); buildTerrain(true); freeTerrainPosition(player); enemies = []; bullets = []; gems = []; pickups = []; particles = []; elapsed = 0; kills = 0; wave = 1; spawnClock = .6; fireClock = 0; mouse.down = false; shake = 0; state = 'playing'; overlay.classList.add('hidden'); ui.pause.textContent = 'Pausar'; canvas.focus(); updateHUD(); }
+function updateHUD() { document.getElementById('health-fill').style.width = `${player.hp / player.max * 100}%`; document.getElementById('health-text').textContent = `${Math.ceil(player.hp)} / ${player.max} PV`; ui.health.setAttribute('aria-valuemin', '0'); ui.health.setAttribute('aria-valuemax', player.max); ui.health.setAttribute('aria-valuenow', player.hp); document.getElementById('health-fill').style.background = player.hp / player.max <= .3 ? '#ff5865' : '#8ce0df'; ui.wave.textContent = `OLEADA ${wave}`; ui.kills.textContent = `${kills} BAJAS`; ui.time.textContent = `${Math.floor(elapsed / 60)}:${String(Math.floor(elapsed % 60)).padStart(2, '0')} / 15:00`; document.getElementById('run-coins').textContent = `KC ${runCoins}`; ui.level.textContent = `${terrainStyle.name.toUpperCase()} · NIVEL ${player.level} · FASE ${Math.min(3, completedPhases + 1)} / 3${player.artifacts.length ? ' · ' + player.artifacts.map(id => artifacts.find(a => a.id === id).icon).join(' ') : ''}`; document.getElementById('xp-text').textContent=`XP ${player.xp} / ${player.need}`; ui.xpbar.style.width = `${player.xp / player.need * 100}%`; updateAbilityHUD(); updateWeaponHUD(); updateUltimateHUD(); updateBossHUD(); updateSecondaryHUD(); }
 const upgrades = [
     { name: 'Flujo de habilidad', icon: '◷', desc: 'Reduce un 15 % la recarga de E, incluida la que esté en curso. Se acumula hasta un 65 % de reducción total.', available: () => player.skillScale>.350001, apply: () => { const previous=player.skillScale;player.skillScale=Math.max(.35,previous*.85);skillCooldown*=player.skillScale/previous; } },
     { name: 'Cargador ampliado', icon: '▤', desc: '+20 % de la capacidad base del cargador (mínimo 1 bala). Se acumula.', available: () => currentWeapon().magazine>0, apply: () => { player.magazineBonus+=magazineIncrease(); } },
@@ -44,8 +44,9 @@ const upgrades = [
     { name: 'Corteza protectora', icon: '▣', desc: 'Recibe 3 PV menos por contacto. El daño mínimo es de 5 PV.', available: () => player.armor < 15, apply: () => player.armor = Math.min(15, player.armor + 3) }
 
 ];
-function levelUp() { player.xp -= player.need; player.level++; player.need = Math.ceil(player.need * 1.45); choices = upgrades.filter(u => !u.available || u.available()).sort(() => Math.random() - .5).slice(0, 3); pendingUpgrade = true; renderUpgrade(); }
+function levelUp() { player.xp -= player.need; player.level++; player.need = Math.ceil(player.need * 1.45); choices = rollUpgradeChoices(); pendingUpgrade = true; renderUpgrade(); }
 function upgradePreview(upgrade) {
+    if(upgrade.agentUpgrade)return `<span class="upgrade-stat"><span class="stat-label">${activeHero().name}</span><span class="stat-change"><span>${player.agentUpgrades.length} / ${agentUpgradeCap()}</span><span class="stat-arrow" aria-hidden="true">→</span><strong>${player.agentUpgrades.length+1} / ${agentUpgradeCap()}</strong></span></span>`;
     const speed = value => `${Math.round(value)} px/s`;
     const rate = value => `${(1 / value).toFixed(1)} /s`;
     const stats = {
@@ -66,11 +67,11 @@ function upgradePreview(upgrade) {
     const [label, before, after] = stats[upgrade.name];
     return `<span class="upgrade-stat"><span class="stat-label">${label}</span><span class="stat-change"><span>${before}</span><span class="stat-arrow" aria-hidden="true">→</span><strong>${after}</strong></span></span>`;
 }
-function renderUpgrade() { state = 'upgrade'; mouse.down = false; overlay.classList.remove('hidden'); overlay.innerHTML = `<div class="panel upgrade-panel"><h2>Subida de nivel <span class="level-number">${player.level}</span></h2><div class="cards">${choices.map((u, i) => `<button class="card" data-choice="${i}"><span class="upgrade-icon" aria-hidden="true">${upgradeIcon(u)}</span><b>${u.name}</b><small>${u.desc}</small>${upgradePreview(u)}<span class="pick-upgrade">Elegir mejora</span></button>`).join('')}</div><button id="reroll-upgrades" ${runStats.rerolls<=0?'disabled':''}>Cambiar opciones · ${runStats.rerolls} restantes</button></div>`; document.getElementById('reroll-upgrades').onclick=rerollUpgrades;overlay.querySelectorAll('[data-choice]').forEach(b => b.onclick = () => { const selected=choices[Number(b.dataset.choice)];selected.apply();choseUpgrade(selected); pendingUpgrade = false; state = 'playing'; overlay.classList.add('hidden'); canvas.focus(); updateHUD(); }); }
+function renderUpgrade() { state = 'upgrade'; mouse.down = false; overlay.classList.remove('hidden'); overlay.innerHTML = `<div class="panel upgrade-panel"><h2>Subida de nivel <span class="level-number">${player.level}</span></h2><div class="cards">${choices.map((u, i) => `<button class="card${u.agentUpgrade?' agent-upgrade-card':''}" data-choice="${i}"><span class="upgrade-icon" aria-hidden="true">${u.agentUpgrade?heroPortrait(activeHero()):upgradeIcon(u)}</span><b>${u.name}</b><small>${u.desc}</small>${upgradePreview(u)}<span class="pick-upgrade">Elegir mejora</span></button>`).join('')}</div><button id="reroll-upgrades" ${runStats.rerolls<=0?'disabled':''}>Cambiar opciones · ${runStats.rerolls} restantes</button></div>`; document.getElementById('reroll-upgrades').onclick=rerollUpgrades;overlay.querySelectorAll('[data-choice]').forEach(b => b.onclick = () => { const selected=choices[Number(b.dataset.choice)];selected.apply();choseUpgrade(selected); pendingUpgrade = false; state = 'playing'; overlay.classList.add('hidden'); canvas.focus(); updateHUD(); }); }
 function reportTime(){return `${Math.floor(elapsed/60)}:${String(Math.floor(elapsed%60)).padStart(2,'0')}`;}
 function reportScreen(kind,title,label,stats,details=''){
     overlay.classList.remove('hidden');
-    overlay.innerHTML=`<section class="panel session-report report-${kind}" aria-label="${title}"><div class="report-heading"><span class="report-symbol" aria-hidden="true">${kind==='paused'?'Ⅱ':kind==='won'?'✓':'×'}</span><div><span class="eyebrow">${label}</span><h2>${title}</h2></div></div><dl class="report-stats">${stats.map(([name,value])=>`<div><dt>${name}</dt><dd>${value}</dd></div>`).join('')}</dl>${details}<div class="report-actions"></div></section>`;
+    overlay.innerHTML=`<section class="panel session-report report-${kind}" aria-label="${title}"><div class="report-heading"><span class="report-symbol" aria-hidden="true">${kind==='paused'?'Ⅱ':kind==='won'?'✓':'×'}</span><div><h2>${title}</h2></div></div><dl class="report-stats">${stats.map(([name,value])=>`<div><dt>${name}</dt><dd>${value}</dd></div>`).join('')}</dl>${details}<div class="report-actions"></div></section>`;
 }
 function reportButton(label,action,primary=false){
     const button=document.createElement('button');button.textContent=label;if(primary)button.className='primary';button.onclick=action;overlay.querySelector('.report-actions').appendChild(button);return button;
@@ -78,15 +79,16 @@ function reportButton(label,action,primary=false){
 function renderPause(){
     reportScreen('paused','Partida en pausa','OPERACIÓN EN CURSO',[
         ['Tiempo',reportTime()],['Fase',`${Math.min(3,completedPhases+1)} / 3`],['Vida',`${Math.ceil(player.hp)} / ${player.max} PV`]
-    ],`<p class="report-note">El tiempo está detenido. Continúa cuando estés listo.</p><details class="paused-build"><summary>Mejoras y evoluciones actuales</summary><p>${Object.entries(runStats.upgrades).map(([name,n])=>name+' ×'+n).join(' · ')||'Sin mejoras de nivel'}</p><p>Evoluciones: ${runStats.evolutions.map(id=>EVOLUTIONS.find(r=>r.id===id).name).join(', ')||'Ninguna'}</p></details>`);
+    ],`<details class="paused-build"><summary>Mejoras y evoluciones actuales</summary><p>${Object.entries(runStats.upgrades).map(([name,n])=>name+' ×'+n).join(' · ')||'Sin mejoras de nivel'}</p><p>Evoluciones: ${runStats.evolutions.map(id=>EVOLUTIONS.find(r=>r.id===id).name).join(', ')||'Ninguna'}</p></details>`);
     reportButton('Continuar partida',pause,true);
     reportButton('Terminar partida',()=>document.getElementById('home').click());
 }
 function pause() { if (state === 'playing') { state = 'paused'; mouse.down = false; keys.clear(); ui.pause.textContent = 'Continuar'; renderPause(); } else if (state === 'paused') { if (pendingArtifact) { renderArtifacts(); return; } if (pendingUpgrade) { renderUpgrade(); return; } state = 'playing'; ui.pause.textContent = 'Pausar'; overlay.classList.add('hidden'); canvas.focus(); } }
 ui.pause.onclick = pause;
 document.getElementById('ability').onclick=activateAbility;
+document.getElementById('secondary').onclick=activateSecondary;
 document.getElementById('ultimate').onclick=activateUltimate;
-window.addEventListener('keydown', e => { if(e.code==='Escape'&&state==='menu'&&document.getElementById('how-to-play').open){e.preventDefault();document.getElementById('how-to-play').open=false;return;} if ((state === 'playing' || state === 'paused') && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault(); if (!e.repeat && (e.code === 'KeyP' || e.code === 'Escape') && (state === 'playing' || state === 'paused')) { e.preventDefault(); pause(); } if(!e.repeat&&e.code==='KeyR'&&state==='playing'){e.preventDefault();reloadWeapon();} if(e.code==='KeyE'&&state==='playing'){e.preventDefault();if(!e.repeat)activateAbility();} if(e.code==='KeyX'&&state==='playing'){e.preventDefault();if(!e.repeat)activateUltimate();} keys.add(e.code); });
+window.addEventListener('keydown', e => { if(e.code==='Escape'&&state==='menu'&&document.getElementById('how-to-play').open){e.preventDefault();document.getElementById('how-to-play').open=false;return;} if ((state === 'playing' || state === 'paused') && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault(); if (!e.repeat && (e.code === 'KeyP' || e.code === 'Escape') && (state === 'playing' || state === 'paused')) { e.preventDefault(); pause(); } if(!e.repeat&&e.code==='KeyR'&&state==='playing'){e.preventDefault();reloadWeapon();} if(e.code==='KeyQ'&&state==='playing'){e.preventDefault();if(!e.repeat)activateSecondary();} if(e.code==='KeyE'&&state==='playing'){e.preventDefault();if(!e.repeat)activateAbility();} if(e.code==='KeyX'&&state==='playing'){e.preventDefault();if(!e.repeat)activateUltimate();} keys.add(e.code); });
 window.addEventListener('keyup', e => keys.delete(e.code));
 window.addEventListener('blur', () => { keys.clear(); mouse.down = false; if (state === 'playing') pause(); });
 canvas.addEventListener('pointermove', e => { const r = canvas.getBoundingClientRect(); mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top; });
@@ -98,11 +100,11 @@ const pickupTypes = {
     bomb: { icon: '✹', color: '#ffae76' },
     magnet: { icon: '∩', color: '#88caff' }
 };
-function defeatEnemy(enemy, allowPickup = true, source='bomb') {
+function defeatEnemy(enemy, allowPickup = true, source='bomb',projectile) {
     // All deaths share XP, coins and kill credit, including bomb kills.
     if(enemy.defeated)return;enemy.defeated=true;
-    enemy.hp = 0; kills++; ultimateKill();recordKill(enemy,source);
-    if(activeHero().id==='reyna'&&soulOrbs.length<60)soulOrbs.push({x:enemy.x,y:enemy.y,life:3});
+    enemy.hp = 0; kills++; ultimateKill();recordKill(enemy,source);agentKill(enemy,source,projectile);
+    if(activeHero().id==='reyna'&&soulOrbs.length<60)soulOrbs.push({x:enemy.x,y:enemy.y,life:activeHero().id==='reyna'&&hasAgentUpgrade(0)?6:3});
     if (Math.random() < player.creditChance) {
         const amount = 2;
         runCoins += amount; progress.coins += amount; saveProgress();
@@ -152,7 +154,7 @@ function update(dt) {
     elapsed = Math.min((completedPhases+1)*300, elapsed + dt);
     if(phaseGate()){updateHUD();return;}
     updateExpansion(dt);if(state!=='playing')return;
-    updateAgentTimers(dt); updateWeapon(dt);
+    updateAgentTimers(dt); updateAgentBuild(dt); updateWeapon(dt);
     wave = 1 + Math.floor(elapsed / 22); spawnClock -= dt; if (spawnClock <= 0) { if (enemies.length < 100) spawn(); spawnClock = Math.max(.17, .95 - wave * .075)/difficulty().spawn; } player.inv = Math.max(0, player.inv - dt); let dx = Number(keys.has('KeyD') || keys.has('ArrowRight')) - Number(keys.has('KeyA') || keys.has('ArrowLeft')), dy = Number(keys.has('KeyS') || keys.has('ArrowDown')) - Number(keys.has('KeyW') || keys.has('ArrowUp')); let len = Math.hypot(dx, dy) || 1; moveOnTerrain(player, dx / len * player.speed * (player.sprint>0?player.sprintFactor:1) * dt, dy / len * player.speed * (player.sprint>0?player.sprintFactor:1) * dt); player.x = Math.max(15, Math.min(W - 15, player.x)); player.y = Math.max(15, Math.min(H - 15, player.y)); refreshFlow(dt); fireClock=Math.max(0,fireClock-dt); if(mouse.down&&currentWeapon().mode==='auto')shoot();
     updateSkillEffects(dt); updateUltimate(dt);
     for (const b of bullets) {
@@ -170,7 +172,7 @@ function update(dt) {
         for (const e of enemies) {
             if (e.hp > 0 && b.life > 0 && !b.hit.has(e) && distance(b, e) < e.r + 4) {
                 damageEnemy(e,b.damage,b.source||'weapon',b);bulletImpact(b,e); b.hit.add(e);
-                if (!player.artifacts.includes('piercing')) b.life = 0;
+                if (!player.artifacts.includes('piercing')&&!b.agentPiercing) b.life = 0;
                 if (player.artifacts.includes('frost')) e.slow = 2;
                 burst(b.x, b.y, '#e1f7a3', 4); if (e.hp <= 0) defeatEnemy(e);
             }
@@ -292,7 +294,7 @@ function saveProgress() {
     updateWallet();
 }
 function applyProgress() { const u=progress.upgrades;player.max+=20*u.health;player.hp=player.max;player.damage=selectedWeapon().damage+u.damage;player.speed*=1+u.speed*.1;player.rate=selectedWeapon().rate*Math.pow(.92,u.rate);player.creditChance=.25+.05*(u.credits||0);player.pickupRadius+=20*(u.pickup||0); }
-function showGame() { document.getElementById('how-to-play').open=false; menuDialog.close(); initialLobby.hidden = true; document.body.classList.remove('in-menu'); lobby.hidden = true; navigation.hidden = true; playArea.hidden = false; resize(); }
+function showGame() { document.querySelector('.hud .stats').appendChild(ui.pause); document.getElementById('how-to-play').open=false; menuDialog.close(); initialLobby.hidden = true; document.body.classList.remove('in-menu'); lobby.hidden = true; navigation.hidden = true; playArea.hidden = false; resize(); }
 function heroSummary(hero){
     const u=progress.upgrades;
     const hp=100+20*u.health;
@@ -319,11 +321,11 @@ function permanentPreview(upgrade){
 let collectionAgents=[],collectionIsInventory=false;
 function agentCollection(list,inventory){
     collectionAgents=list;collectionIsInventory=inventory;
-    return `<div class="agent-filters"><label>Buscar agente<input id="agent-search" type="search" placeholder="Nombre del agente" autocomplete="off"></label><label>Rareza<select id="agent-rarity"><option value="">Todas</option>${rarityTiers.map(r=>`<option>${r.name}</option>`).join('')}</select></label><span id="agent-count" aria-live="polite">${list.length} agentes</span></div><div id="agent-grid" class="collection">${list.map(h=>heroCard(h,inventory)).join('')}</div>`;
+    return `<div class="agent-filters"><label>Buscar agente<input id="agent-search" type="search" placeholder="Nombre del agente" autocomplete="off"></label><label>Rareza<select id="agent-rarity"><option value="">Todas</option>${rarityTiers.map(r=>`<option>${r.name}</option>`).join('')}</select></label><span id="agent-count" aria-live="polite">${list.length} agentes</span></div><div class="collection-scroll" tabindex="0" role="region" aria-label="${inventory?'Agentes del inventario':'Agentes del gacha'}">${inventory?'':'<div id="gacha-result" aria-live="polite" tabindex="-1"></div>'}<div id="agent-grid" class="collection">${list.map(h=>heroCard(h,inventory)).join('')}</div></div>`;
 }
 function bindAgentFilters(){
     const search=document.getElementById('agent-search'),rarity=document.getElementById('agent-rarity');if(!search||!rarity)return;
-    const filter=()=>{const list=collectionAgents.filter(h=>h.name.toLocaleLowerCase('es').includes(search.value.trim().toLocaleLowerCase('es'))&&(!rarity.value||h.rarity===rarity.value));document.getElementById('agent-grid').innerHTML=list.length?list.map(h=>heroCard(h,collectionIsInventory)).join(''):'<p class="empty-collection">No hay agentes con este filtro.</p>';document.getElementById('agent-count').textContent=`${list.length} agentes`;lobby.querySelectorAll('[data-equip]').forEach(b=>b.onclick=()=>equipHero(b.dataset.equip));};
+    const filter=()=>{const list=collectionAgents.filter(h=>h.name.toLocaleLowerCase('es').includes(search.value.trim().toLocaleLowerCase('es'))&&(!rarity.value||h.rarity===rarity.value));document.getElementById('agent-grid').innerHTML=list.length?list.map(h=>heroCard(h,collectionIsInventory)).join(''):'<p class="empty-collection">No hay agentes con este filtro.</p>';document.getElementById('agent-count').textContent=`${list.length} agentes`;const grid=document.getElementById('agent-grid');grid.parentElement.scrollTop=grid.offsetTop;lobby.querySelectorAll('[data-equip]').forEach(b=>b.onclick=()=>equipHero(b.dataset.equip));};
     search.oninput=filter;rarity.onchange=filter;
 }
 function agentInfoButton(hero){return `<button type="button" class="agent-info-button" data-agent-info="${hero.id}" aria-label="Información de ${hero.name}" aria-haspopup="dialog" title="Información de ${hero.name}">i</button>`;}
@@ -332,7 +334,7 @@ function showAgentInfo(id){
     const hero=heroes.find(h=>h.id===id);if(!hero||state!=='menu')return;
     const ultimate=ULTIMATES[id],dialog=document.getElementById('agent-info-dialog');
     dialog.style.setProperty('--rarity',hero.color);
-    document.getElementById('agent-info-content').innerHTML=`<span class="rarity">${hero.rarity} · ${hasAgent(id)?'En tu inventario':'Sin conseguir'}</span>${heroPortrait(hero,true)}<h2 id="agent-info-title">${hero.name}</h2>${agentSkillDetails(hero)}<div class="agent-skill-info"><span class="skill-key">X</span><div><strong>${ultimate.name}</strong><p>${ultimate.description}</p><small>${ultimate.cost} eliminaciones para cargar la definitiva</small></div></div><p class="agent-info-chance">Probabilidad de invocación: ${formatChance(hero.chance)} %</p>`;
+    document.getElementById('agent-info-content').innerHTML=`<span class="rarity">${hero.rarity} · ${hasAgent(id)?'En tu inventario':'Sin conseguir'}</span>${heroPortrait(hero,true)}<h2 id="agent-info-title">${hero.name}</h2>${agentInfoBuild(hero)}${agentSkillDetails(hero)}<div class="agent-skill-info"><span class="skill-key">X</span><div><strong>${ultimate.name}</strong><p>${ultimate.description}</p><small>${ultimate.cost} eliminaciones para cargar la definitiva</small></div></div>${agentUpgradeInfo(hero)}<p class="agent-info-chance">Probabilidad de invocación: ${formatChance(hero.chance)} %</p>`;
     if(!dialog.open)dialog.showModal();
 }
 document.addEventListener('click',event=>{const button=event.target.closest('[data-agent-info]');if(button)showAgentInfo(button.dataset.agentInfo);});
@@ -345,47 +347,70 @@ agentInfoDialog.addEventListener('click',event=>{if(event.target===agentInfoDial
 function equipHero(id) { if (state !== 'menu' || !hasAgent(id)) return; progress.selected = id; saveProgress(); showMenu(currentTab); }
 function upgradeCost(u) { return u.base * ((progress.upgrades[u.id]||0) + 1); }
 function buyUpgrade(id) { if (state !== 'menu') return false; const u = permanent.find(x => x.id === id); if (!u) return false; const cost = upgradeCost(u); if (progress.upgrades[id] >= u.max || progress.coins < cost) return false; progress.coins -= cost; progress.upgrades[id]=(progress.upgrades[id]||0)+1; saveProgress(); showMenu('mejoras'); return true; }
-let isSummoning=false;
+let isSummoning=false,summonCount=1;
 function rollHero(){
     let roll=Math.random()*100;
     for(const hero of heroes){roll-=hero.chance;if(roll<0)return hero;}
     return heroes[heroes.length-1];
 }
-async function summon(){
-    if(isSummoning||state!=='menu'||progress.coins<GACHA_COST)return null;
-    const hero=rollHero(),duplicate=progress.owned.includes(hero.id);
-    progress.coins-=GACHA_COST;
-    if(duplicate)progress.coins+=20;else progress.owned.push(hero.id);
-    // Persist the award before the animation so closing the browser cannot lose it.
+function updateSummonControls(){
+    const button=document.getElementById('summon'),select=document.getElementById('summon-count'),funds=document.getElementById('gacha-funds');
+    if(!button||!select)return;
+    const cost=GACHA_COST*summonCount;
+    select.value=String(summonCount);select.disabled=isSummoning;
+    button.disabled=isSummoning||progress.coins<cost;
+    button.textContent=`Invocar · KC ${cost}`;
+    if(funds){funds.hidden=isSummoning||progress.coins>=cost;funds.textContent=progress.coins<cost?`Te faltan ${cost-progress.coins} KC.`:'';}
+}
+async function summon(count=summonCount){
+    if(![1,2,3,4,5].includes(count)||isSummoning||state!=='menu'||progress.coins<GACHA_COST*count)return null;
+    summonCount=count;
+    const rewards=[];progress.coins-=GACHA_COST*count;
+    for(let i=0;i<count;i++){
+        const hero=rollHero(),duplicate=progress.owned.includes(hero.id);
+        if(duplicate)progress.coins+=20;else progress.owned.push(hero.id);
+        rewards.push({hero,duplicate});
+    }
+    // Toda la tanda se guarda antes de animar, incluidos duplicados dentro de ella.
     saveProgress();showMenu('gacha');isSummoning=true;
-    const result=document.getElementById('gacha-result'),button=document.getElementById('summon'),close=document.getElementById('close-panel');
-    button.disabled=true;button.textContent='Invocando…';close.disabled=true;result.setAttribute('aria-busy','true');
-    const winnerIndex=32,strip=Array.from({length:38},(_,i)=>i===winnerIndex?hero:rollHero());
-    result.innerHTML=`<div class="roulette"><p class="roulette-status" role="status">La ruleta está girando…</p><div class="roulette-window"><span class="roulette-pointer" aria-hidden="true">▼</span><div class="roulette-strip" aria-hidden="true">${strip.map(h=>`<div class="roulette-tile" style="--rarity:${h.color}">${heroPortrait(h)}<b>${h.name}</b><span class="rarity">${h.rarity}</span></div>`).join('')}</div><span class="roulette-marker" aria-hidden="true"></span></div></div>`;
-    result.scrollIntoView({block:'nearest'});
-    const track=result.querySelector('.roulette-strip'),viewport=result.querySelector('.roulette-window'),tile=track.firstElementChild;
-    const step=tile.getBoundingClientRect().width+parseFloat(getComputedStyle(track).gap),from=viewport.clientWidth/2-tile.getBoundingClientRect().width/2,to=from-winnerIndex*step;
+    const result=document.getElementById('gacha-result'),close=document.getElementById('close-panel');
+    updateSummonControls();close.disabled=true;result.setAttribute('aria-busy','true');
+    const winnerIndex=5,stripLength=count===1?38:30;
+    result.innerHTML=`<div class="gacha-roulette-grid ${count>1?'gacha-batch':''}">${rewards.map(({hero},index)=>{
+        const strip=Array.from({length:stripLength},(_,i)=>i===winnerIndex?hero:rollHero());
+        return `<div class="roulette"><div class="roulette-window"><span class="roulette-pointer" aria-hidden="true">▶</span><div class="roulette-strip" aria-hidden="true">${strip.map(h=>`<div class="roulette-tile" style="--rarity:${h.color}">${heroPortrait(h)}<b>${h.name}</b><span class="rarity">${h.rarity}</span></div>`).join('')}</div><span class="roulette-marker" aria-hidden="true"></span></div></div>`;
+    }).join('')}</div>`;
+    result.scrollIntoView({block:'start'});
     const reduced=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     try{
-        const animation=track.animate([{transform:`translateX(${from}px)`},{transform:`translateX(${to}px)`}],{duration:reduced?300:5200,easing:'cubic-bezier(.12,.74,.12,1)',fill:'forwards'});
-        await animation.finished;
-        track.children[winnerIndex].classList.add('roulette-winner');
-        result.querySelector('.roulette-status').textContent='¡La ruleta se ha detenido!';
-        await new Promise(resolve=>setTimeout(resolve,reduced?0:450));
-    }catch{ /* Always reveal the already-saved award if animation is unavailable. */ }
-    finally{isSummoning=false;close.disabled=false;result.removeAttribute('aria-busy');}
-    result.innerHTML=`<div class="hero-card result gacha-reveal agent-collection-card" style="--rarity:${hero.color}">${agentInfoButton(hero)}<span class="rarity">${hero.rarity}</span>${heroPortrait(hero,true)}<h2>${hero.name}</h2><strong>${duplicate?'Repetido: recuperas 20 KC.':'¡Nuevo personaje! Ya está en tu inventario.'}</strong></div>`;
-    button.disabled=progress.coins<GACHA_COST;button.textContent=`Invocar · KC ${GACHA_COST}`;
-    result.focus();return hero;
+        await Promise.all([...result.querySelectorAll('.roulette-strip')].map(async(track,index)=>{
+            const viewport=track.parentElement,tile=track.firstElementChild;
+            const horizontal=count===1,tileSize=horizontal?tile.getBoundingClientRect().width:tile.getBoundingClientRect().height;
+            const step=tileSize+parseFloat(getComputedStyle(track).gap),center=(horizontal?viewport.clientWidth:viewport.clientHeight)/2-tileSize/2,axis=horizontal?'X':'Y';
+            const from=center-(track.children.length-1)*step,to=center-winnerIndex*step;
+            try{
+                const animation=track.animate([{transform:`translate${axis}(${from}px)`},{transform:`translate${axis}(${to}px)`}],{duration:reduced?200:4800+index*90,easing:'cubic-bezier(.12,.74,.12,1)',fill:'forwards'});
+                await animation.finished;track.children[winnerIndex].classList.add('roulette-winner');
+            }catch{ /* El premio ya está guardado aunque no haya animaciones. */ }
+        }));
+        if(!reduced)await new Promise(resolve=>setTimeout(resolve,400));
+    }finally{
+        isSummoning=false;close.disabled=false;result.removeAttribute('aria-busy');
+        const duplicates=rewards.filter(r=>r.duplicate).length;
+        result.innerHTML=`<div class="gacha-summary" role="status"><span>${count-duplicates} nuevos · ${duplicates} repetidos${duplicates?` · ${duplicates*20} KC recuperados`:''}</span></div><div class="gacha-results-grid">${rewards.map(({hero,duplicate},i)=>`<article class="hero-card result gacha-reveal agent-collection-card" style="--rarity:${hero.color}">${agentInfoButton(hero)}<span class="rarity">${hero.rarity}</span>${heroPortrait(hero,true)}<h2>${hero.name}</h2><strong class="gacha-award ${duplicate?'duplicate':'new'}">${duplicate?'Repetido · +20 KC':'Nuevo'}</strong></article>`).join('')}</div>`;
+        updateSummonControls();result.focus({preventScroll:true});result.scrollIntoView({block:'start'});
+    }
+    return count===1?rewards[0].hero:rewards.map(r=>r.hero);
 }
+
 function menuIcon(id){
     const paths={progreso:'<path d="M4 20V12h4v8M10 20V8h4v12M16 20V3h4v17M3 21h18"/>',jugar:'<path d="m8 4 12 8-12 8Z" fill="currentColor" stroke="none"/>',tienda:'<path d="M4 10v10h16V10M3 10l2-6h14l2 6M3 10q3 4 6 0 3 4 6 0 3 4 6 0M9 20v-6h6v6"/>',mejoras:'<path d="m4 11 8-8 8 8M4 21l8-8 8 8"/>',inventario:'<path d="m3 7 9-4 9 4v11l-9 4-9-4ZM3 7l9 5 9-5M12 12v10"/>',gacha:'<path d="M7 3h12v17H7ZM3 7v15h12M13 7l3 5-3 4-3-4Z"/>',personaje:'<circle cx="12" cy="7" r="4"/><path d="M3 22v-3c0-7 18-7 18 0v3Z"/>'};
     return `<svg class="menu-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true">${paths[id]||paths.mejoras}</svg>`;
 }
 function homeScreen(hero){
     const w=selectedWeapon(),damage=Number((w.damage+progress.upgrades.damage).toFixed(2)),rate=(1/(w.rate*Math.pow(.92,progress.upgrades.rate))).toFixed(1);
-    const hint=(w.mode==='burst'?`Cada clic dispara una ráfaga de ${primaryBursts[w.id].rounds} balas.`:w.mode==='auto'?'Mantén pulsado el clic para disparar.':w.mode==='melee'?'Un clic para atacar a los enemigos cercanos.':'Cada clic realiza un disparo.')+(alternateFire[w.id]?` Clic derecho: ${alternateFire[w.id].kind==='burst'?'ráfaga de':'disparo triple de'} ${alternateFire[w.id].rounds} balas.`:'');
-    return `<div class="home-heading"><div><p class="eyebrow">PREPARACIÓN / ARENA ROGUELIKE</p><h1>Tu próximo despliegue</h1></div><span class="home-record">RÉCORD PERSONAL<strong>${best} <small>bajas</small></strong></span></div><div class="collection home-loadout"><article class="hero-card home-agent" style="--rarity:${hero.color}"><div class="loadout-label"><span>01 / AGENTE</span><span class="rarity">${hero.rarity}</span></div><div class="agent-profile"><div class="agent-stage" data-agent="${hero.name}" aria-hidden="true">${heroPortrait(hero,true)}<span class="stage-caption">AGENTE EQUIPADO</span></div><div class="agent-identity"><h2>${hero.name}</h2><span class="skills-label">HABILIDADES</span><details class="loadout-skill"><summary><kbd>E</kbd><span>${hero.skill}</span><small>${(hero.cooldown*Math.pow(.95,progress.upgrades.ability||0)).toFixed(1)} s</small></summary><div><p>${hero.description}</p></div></details><details class="loadout-skill ultimate-details"><summary><kbd>X</kbd><span>${ULTIMATES[hero.id].name}</span><small>${ULTIMATES[hero.id].cost} bajas</small></summary><div><p>${ULTIMATES[hero.id].description}</p></div></details></div></div>${heroSummary(hero)}<label class="home-agent-picker"><span>Cambiar personaje</span><select id="home-agent-select" aria-label="Cambiar personaje">${heroes.filter(agent=>hasAgent(agent.id)).map(agent=>`<option value="${agent.id}" ${agent.id===hero.id?'selected':''}>${agent.name} · ${agent.rarity}</option>`).join('')}</select></label></article><article class="hero-card home-weapon" style="--rarity:#36d9d0"><div class="loadout-label"><span>02 / ARMA</span><span class="rarity">${w.category}</span></div><div class="home-weapon-heading"><h2>${w.name}</h2><span>${weaponMode(w)}</span></div><div class="home-weapon-art">${weaponPortrait(w)}</div><dl class="weapon-specs home-weapon-specs"><div><dt>Daño${w.pellets>1?' / perdigón':''}</dt><dd>${damage}${w.pellets>1?` × ${w.pellets}`:''}</dd></div><div><dt>Cadencia</dt><dd>${rate} <small>/s</small></dd></div><div><dt>Cargador</dt><dd>${w.magazine||'∞'}</dd></div><div><dt>Recarga</dt><dd>${w.reload?`${(w.reload*Math.pow(.95,progress.upgrades.reload||0)).toFixed(2)} s`:'—'}</dd></div><div><dt>Alcance base</dt><dd>${w.mode==='melee'?58:Math.round(w.speed*w.life)} <small>px</small></dd></div><div><dt>Proyectiles</dt><dd>${w.mode==='melee'?'—':w.pellets}</dd></div></dl><p class="home-weapon-hint">${hint}${w.magazine?' R para recargar.':''}</p><button id="change-home-weapon" class="loadout-action">${menuIcon('inventario')}<span>Cambiar arma</span><span aria-hidden="true">›</span></button></article></div><div class="home-briefing"><span><b>15:00</b> DURACIÓN</span><span><b>3</b> FASES · UN ARTEFACTO CADA 5 MIN</span><span><b>6</b> MAPAS · SELECCIÓN ALEATORIA</span></div>`;
+
+    return `<div class="home-heading"><div><h1>Equipo</h1></div><span class="home-record">RÉCORD<strong>${best} <small>bajas</small></strong></span></div><div class="collection home-loadout"><article class="hero-card home-agent" style="--rarity:${hero.color}"><div class="loadout-label"><span class="rarity">${hero.rarity}</span></div><div class="agent-profile"><div class="agent-stage" data-agent="${hero.name}" aria-hidden="true">${heroPortrait(hero,true)}</div><div class="agent-identity"><h2>${hero.name}</h2><details class="loadout-skill"><summary><kbd>Q</kbd><span>${Q_ABILITIES[hero.id].name}</span><small>${Q_ABILITIES[hero.id].cooldown} s</small></summary><div><p>${Q_ABILITIES[hero.id].description}</p></div></details><details class="loadout-skill"><summary><kbd>E</kbd><span>${hero.skill}</span><small>${(hero.cooldown*Math.pow(.95,progress.upgrades.ability||0)).toFixed(1)} s</small></summary><div><p>${hero.description}</p></div></details><details class="loadout-skill ultimate-details"><summary><kbd>X</kbd><span>${ULTIMATES[hero.id].name}</span><small>${ULTIMATES[hero.id].cost} bajas</small></summary><div><p>${ULTIMATES[hero.id].description}</p></div></details></div></div>${heroSummary(hero)}<label class="home-agent-picker"><span>Cambiar personaje</span><select id="home-agent-select" aria-label="Cambiar personaje">${heroes.filter(agent=>hasAgent(agent.id)).map(agent=>`<option value="${agent.id}" ${agent.id===hero.id?'selected':''}>${agent.name} · ${agent.rarity}</option>`).join('')}</select></label></article><article class="hero-card home-weapon" style="--rarity:#36d9d0"><div class="loadout-label"><span class="rarity">${w.category}</span></div><div class="home-weapon-heading"><h2>${w.name}</h2><span>${weaponMode(w)}</span></div><div class="home-weapon-art">${weaponPortrait(w)}</div><dl class="weapon-specs home-weapon-specs"><div><dt>Daño${w.pellets>1?' / perdigón':''}</dt><dd>${damage}${w.pellets>1?` × ${w.pellets}`:''}</dd></div><div><dt>Cadencia</dt><dd>${rate} <small>/s</small></dd></div><div><dt>Cargador</dt><dd>${w.magazine||'∞'}</dd></div><div><dt>Recarga</dt><dd>${w.reload?`${(w.reload*Math.pow(.95,progress.upgrades.reload||0)).toFixed(2)} s`:'—'}</dd></div><div><dt>Alcance base</dt><dd>${w.mode==='melee'?58:Math.round(w.speed*w.life)} <small>px</small></dd></div><div><dt>Proyectiles</dt><dd>${w.mode==='melee'?'—':w.pellets}</dd></div></dl><button id="change-home-weapon" class="loadout-action">${menuIcon('inventario')}<span>Cambiar arma</span><span aria-hidden="true">›</span></button></article></div>`;
 }
 function showMenu(tab = 'jugar') {
     if(isSummoning)return;
@@ -396,20 +421,20 @@ function showMenu(tab = 'jugar') {
     if (!isPanel) menuDialog.close();
     initialLobby.hidden = false;
     state = 'menu'; currentTab = tab; mouse.down = false; keys.clear(); document.body.classList.add('in-menu'); lobby.hidden = false; navigation.hidden = false; playArea.hidden = true; overlay.classList.add('hidden');
-    navigation.innerHTML = '<div class="menu-brand"><div class="brand">ÚLTIMA <br>CHISPA<span class="brand-line" aria-hidden="true"></span></div><span class="tag">OPERACIONES / ROGUELIKE</span></div>' + ['jugar', 'tienda', 'mejoras', 'inventario', 'gacha', 'progreso'].map(id => `<button data-tab="${id}" class="${id === tab ? 'active' : ''}" aria-current="${id === tab ? 'page' : 'false'}">${menuIcon(id)}<span>${id[0].toUpperCase()+id.slice(1)}</span></button>`).join('')+`<div class="nav-collection"><span>TU COLECCIÓN</span><strong>${availableAgents().length}<small> / ${heroes.length} agentes</small></strong><strong>${availableWeapons().length}<small> / ${WEAPONS.length} armas</small></strong></div>`;
+    navigation.innerHTML = '<div class="menu-brand"><div class="brand">VALOROGUE<span class="brand-line" aria-hidden="true"></span></div></div>' + ['jugar', 'tienda', 'mejoras', 'inventario', 'gacha', 'progreso'].map(id => `<button data-tab="${id}" class="${id === tab ? 'active' : ''}" aria-current="${id === tab ? 'page' : 'false'}">${menuIcon(id)}<span>${id[0].toUpperCase()+id.slice(1)}</span></button>`).join('')+`<div class="nav-collection"><strong>${availableAgents().length}<small> / ${heroes.length} agentes</small></strong><strong>${availableWeapons().length}<small> / ${WEAPONS.length} armas</small></strong></div>`;
     navigation.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => b.dataset.tab === 'jugar' ? start() : showMenu(b.dataset.tab));
     const h = activeHero();
     if(tab==='jugar')lobby.innerHTML=homeScreen(h);
     if(tab==='tienda')lobby.innerHTML=shopScreen();
     if(tab==='progreso')lobby.innerHTML=progressionScreen();
-    if (tab === 'inventario') lobby.innerHTML = `<p class="eyebrow">TU COLECCIÓN · ${availableAgents().length} / ${heroes.length}</p><h1>Inventario</h1>${sessionUnlocks?'<p class="konami-note" role="status">Código Konami activado: todos los agentes y armas disponibles hasta recargar la página.</p>':''}${inventoryTabs()}${inventoryPage==='weapons'?weaponInventory():agentCollection(heroes.filter(h => hasAgent(h.id)),true)}`;
-    if (tab === 'mejoras') lobby.innerHTML = `<p class="eyebrow">EL TALLER DEL REFUGIO</p><h1>Mejoras permanentes</h1><nav class="permanent-pages" aria-label="Grupos de mejoras"><button data-permanent-page="0" aria-pressed="${permanentPage===0}">Combate</button><button data-permanent-page="1" aria-pressed="${permanentPage===1}">Recursos y equipo</button></nav><p>Se aplican a todos tus personajes al empezar una partida. Cada mejora tiene cinco niveles.</p><div class="collection">${permanent.slice(permanentPage*4,permanentPage*4+4).map(u => { const n = progress.upgrades[u.id]||0, cost = upgradeCost(u); return `<article class="hero-card permanent-card"><span class="upgrade-icon" aria-hidden="true">${upgradeIcon(u)}</span><h2>${u.name}</h2><p>${u.desc}</p>${permanentPreview(u)}<button data-buy="${u.id}" ${n >= u.max || progress.coins < cost ? 'disabled' : ''}>${n >= u.max ? 'Al máximo' : `Mejorar · KC ${cost}`}</button></article>`; }).join('')}</div>`;
-    if (tab === 'gacha') lobby.innerHTML = `<p class="eyebrow">EL PORTAL DE LAS CHISPAS</p><h1>Gacha</h1><p>Invoca uno de los ${heroes.length} agentes por ${GACHA_COST} Kingdom Credits. Si se repite, recuperas 20 KC.</p><button id="summon" class="primary" ${progress.coins < GACHA_COST ? 'disabled' : ''}>Invocar · KC ${GACHA_COST}</button>${progress.coins < GACHA_COST ? `<p>Te faltan ${GACHA_COST - progress.coins} KC. Consíguelas jugando.</p>` : ''}<div id="gacha-result" aria-live="polite" tabindex="-1"></div><p class="gacha-odds">Por rareza: común 60 % · raro 25 % · épico 10 % · legendario 4 % · ultralegendario 1 %. Repartido entre 6 agentes por rareza.</p>${agentCollection(heroes,false)}`;
+    if (tab === 'inventario') lobby.innerHTML = `<h1>Inventario</h1>${sessionUnlocks?'<p class="konami-note" role="status">Código Konami activado: todos los agentes y armas disponibles hasta recargar la página.</p>':''}${inventoryTabs()}${inventoryPage==='weapons'?weaponInventory():agentCollection(heroes.filter(h => hasAgent(h.id)),true)}`;
+    if (tab === 'mejoras') lobby.innerHTML = `<h1>Mejoras permanentes</h1><nav class="permanent-pages" aria-label="Grupos de mejoras"><button data-permanent-page="0" aria-pressed="${permanentPage===0}">Combate</button><button data-permanent-page="1" aria-pressed="${permanentPage===1}">Recursos y equipo</button></nav><div class="collection">${permanent.slice(permanentPage*4,permanentPage*4+4).map(u => { const n = progress.upgrades[u.id]||0, cost = upgradeCost(u); return `<article class="hero-card permanent-card"><span class="upgrade-icon" aria-hidden="true">${upgradeIcon(u)}</span><h2>${u.name}</h2><p>${u.desc}</p>${permanentPreview(u)}<button data-buy="${u.id}" ${n >= u.max || progress.coins < cost ? 'disabled' : ''}>${n >= u.max ? 'Al máximo' : `Mejorar · KC ${cost}`}</button></article>`; }).join('')}</div>`;
+    if (tab === 'gacha') lobby.innerHTML = `<h1>Gacha</h1><div class="gacha-actions"><label for="summon-count"><select id="summon-count" aria-label="Cantidad de invocaciones">${[1,2,3,4,5].map(n=>`<option value="${n}" ${n===summonCount?'selected':''}>${n}</option>`).join('')}</select></label><button id="summon" class="primary">Invocar</button></div><p id="gacha-funds" role="status"></p><details class="gacha-info"><summary>Probabilidades</summary><div class="gacha-probabilities"><p>Común 60 % · Raro 25 % · Épico 10 % · Legendario 4 % · Ultralegendario 1 %.</p><p>Cada rareza reparte su probabilidad entre 6 agentes. Los repetidos devuelven 20 KC.</p></div></details>${agentCollection(heroes,false)}`;
     const changeAgent=document.getElementById('home-agent-select');if(changeAgent)changeAgent.onchange=()=>equipHero(changeAgent.value);
     const changeWeapon=document.getElementById('change-home-weapon');if(changeWeapon)changeWeapon.onclick=()=>{inventoryPage='weapons';showMenu('inventario');};
     bindAgentFilters(); bindWeaponMenu();if(tab==='progreso')bindProgression();
     if (isPanel) { menuDialog.setAttribute('aria-label', tab[0].toUpperCase() + tab.slice(1)); if (!menuDialog.open) menuDialog.showModal(); }
-    const summonButton = document.getElementById('summon'); if (summonButton) summonButton.onclick = summon;
+    const summonButton = document.getElementById('summon'); if (summonButton) {summonButton.onclick=()=>summon();document.getElementById('summon-count').onchange=event=>{summonCount=Number(event.target.value);updateSummonControls();};updateSummonControls();}
     lobby.querySelectorAll('[data-equip]').forEach(b => b.onclick = () => equipHero(b.dataset.equip));
     lobby.querySelectorAll('[data-permanent-page]').forEach(b=>b.onclick=()=>{permanentPage=Number(b.dataset.permanentPage);showMenu('mejoras');});
     lobby.querySelectorAll('[data-buy]').forEach(b => b.onclick = () => buyUpgrade(b.dataset.buy));
@@ -441,7 +466,7 @@ function phaseComplete() {
 }
 function renderArtifacts() {
     state = 'artifact'; overlay.classList.remove('hidden');
-    overlay.innerHTML = `<div class="panel"><span class="eyebrow">FASE ${completedPhases} / 3 COMPLETADA</span><h2>Un poder ancestral.</h2><p>Elige un artefacto. Sus efectos se combinan y duran esta partida.${completedPhases === 3 ? ' Esta es tu recompensa final antes de completar la aventura.' : ''}</p><div class="cards">${artifactChoices.map((a, i) => `<button class="card" data-artifact="${i}"><em aria-hidden="true">${artifactIcon(a)}</em><b>${a.name}</b><small>${a.desc}</small></button>`).join('')}</div></div>`;
+    overlay.innerHTML = `<div class="panel"><span class="eyebrow">FASE ${completedPhases} / 3 COMPLETADA</span><h2>Artefacto</h2><div class="cards">${artifactChoices.map((a, i) => `<button class="card" data-artifact="${i}"><em aria-hidden="true">${artifactIcon(a)}</em><b>${a.name}</b><small>${a.desc}</small></button>`).join('')}</div></div>`;
     overlay.querySelectorAll('[data-artifact]').forEach(b => b.onclick = () => {
         player.artifacts.push(artifactChoices[Number(b.dataset.artifact)].id); pendingArtifact = false;
         if (completedPhases === 3) { victory(); return; }

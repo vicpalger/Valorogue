@@ -200,12 +200,27 @@ function uiIconImage(name){
     if(right>=left){const w=right-left+1,h=bottom-top+1,scale=28/Math.max(w,h),dw=Math.round(w*scale),dh=Math.round(h*scale);g.drawImage(source,left,top,w,h,Math.floor((32-dw)/2),Math.floor((32-dh)/2),dw,dh);}
     uiIconCache.set(name,img);return img;
 }
-const upgradeIconCache = new Map();
+// Assets originales de las mejoras. Se muestran directamente, sin redibujarlos
+// ni reducirlos a la cuadrícula de 32 px de los artefactos.
+const upgradeAssets=Object.freeze({
+    '✦':'assets/mejoras/Bala dorada pixel art.png',
+    'ϟ':'assets/mejoras/Rayo pixelado amarillo sobre fondo azul oscuro.png',
+    '➚':'assets/mejoras/Zapatilla pixel art en movimiento.png',
+    '♥':'assets/mejoras/Corazón rojo pixelado con brillo (1).png',
+    '⋔':'assets/mejoras/Tres balas doradas en arco pixelado.png',
+    '✚':'assets/mejoras/Cruz médica pixelada roja.png',
+    '∩':'assets/mejoras/Imán de herradura pixelado con chispas.png',
+    '◎':'assets/mejoras/Mira de píxeles cian brillante.png',
+    '✧':'assets/mejoras/Mira de objetivo pixelada roja.png',
+    '▣':'assets/mejoras/Escudo medieval azul en píxeles.png',
+    '▤':'assets/mejoras/Cargador de arma pixel art.png',
+    '↻':'assets/mejoras/Icono pixelado de recarga circular retro.png',
+    '◷':'assets/mejoras/Icono de reloj pixelado clásico.png',
+    '◇':'assets/Kingdom_Credits.webp'
+});
 function upgradeIcon(upgrade) {
-    const names = { '✦': 'damage', 'ϟ': 'rapid', '➚': 'speedUpgrade', '♥': 'heart', '⋔': 'spread', '✚': 'recovery', '∩': 'magnetUpgrade', '◎': 'range', '✧': 'critical', '▣': 'shield', '▤': 'magazine', '↻': 'reload', '◇': 'credits', '◷': 'cooldown' };
-    const name = names[upgrade.icon];
-    if (!upgradeIconCache.has(name)) upgradeIconCache.set(name, uiIconImage(name).toDataURL());
-    return `<img src="${upgradeIconCache.get(name)}" width="72" height="72" alt="">`;
+    const src=encodeURI(upgradeAssets[upgrade.icon]);
+    return `<img class="upgrade-asset" src="${src}" width="72" height="72" decoding="async" loading="lazy" alt="">`;
 }
 
 Object.assign(pixelSprites, {

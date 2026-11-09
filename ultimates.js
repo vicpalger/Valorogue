@@ -35,7 +35,7 @@ const ultimateDefinitions=[
 const ULTIMATES=Object.fromEntries(ultimateDefinitions.map(([id,name,cost,description])=>[id,{name,cost,description}]));
 function resetUltimate(){Object.assign(player,{ultCharge:0,ultTime:0,ultPower:1,ultShots:0,ultRegen:false,ultRevive:null});}
 function ultimateKill(){
- const u=ULTIMATES[activeHero().id];player.ultCharge=Math.min(u.cost,player.ultCharge+1);
+ const u=ULTIMATES[activeHero().id];player.ultCharge=Math.min(u.cost,player.ultCharge+agentUltimateGain());
  if(player.ultRegen&&player.ultTime>0)player.hp=Math.min(player.max,player.hp+player.max*.08);
  updateUltimateHUD();
 }
@@ -63,7 +63,7 @@ function activateUltimate(){
  if(skillEffects.length>48){skillHint('Espera a que terminen los efectos');return false;}
  const p=skillPoint(600),angle=aimAngle(),target=enemies.filter(e=>e.hp>0).sort((a,b)=>distance(a,p)-distance(b,p))[0];
  if(['deadlock','iso'].includes(id)&&!target){skillHint('Necesitas un enemigo');return false;}
- player.ultCharge=0;
+ player.ultCharge=0;player.ultChargeFraction=0;agentUltimateStart();const previousSlot=agentCastSlot;agentCastSlot='x';
  const area=(r,damage,stun=0)=>skillBurst(player.x,player.y,r,damage,stun);
  const line=(damage,stun,slow=0)=>{for(const e of enemies){const dx=e.x-player.x,dy=e.y-player.y,along=dx*Math.cos(angle)+dy*Math.sin(angle),side=Math.abs(-dx*Math.sin(angle)+dy*Math.cos(angle));if(e.hp>0&&along>=0&&along<600&&side<90+e.r){e.stun=Math.max(e.stun||0,stun);e.slow=Math.max(e.slow||0,slow);damageEnemy(e,damage);}}addSkillEffect('beam',player.x,player.y,{angle,length:600,width:180,life:.8});};
  switch(id){
@@ -95,5 +95,5 @@ function activateUltimate(){
  case 'miks':area(180,15);addSkillEffect('sound',player.x,player.y,{r:180,life:8,tick:0,follow:true});break;
  case 'hush':addSkillEffect('gravity',p.x,p.y,{r:230,life:8});addSkillEffect('poison',p.x,p.y,{r:230,life:8,dps:8});break;
  }
- skillHint(u.name);updateHUD();return true;
+ agentUltimateEnd();agentCastSlot=previousSlot;skillHint(u.name);updateHUD();return true;
 }

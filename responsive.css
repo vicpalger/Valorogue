@@ -169,3 +169,25 @@ body.in-menu main{min-width:0}
  .progression-grid .mission{grid-template-columns:minmax(0,1fr);gap:8px}.progression-grid .mission>strong,.progression-grid .mission>progress,.progression-grid .mission>span,.progression-grid .mission>button{grid-column:1;min-width:0}.progression-grid .mission>strong{grid-row:1}.progression-grid .mission>progress{grid-row:2}.progression-grid .mission>span{grid-row:3}.progression-grid .mission>button{grid-row:4;width:100%;min-width:0}
  .progression-grid>article{padding:10px}.progression-grid h2{font-size:20px;overflow-wrap:anywhere}
 }
+
+/* Los PNG proporcionados conservan su detalle al reducirse a las tarjetas. */
+:is(#lobby,#menu-content,.upgrade-panel) .upgrade-icon img.upgrade-asset{image-rendering:auto;object-fit:contain}
+/* Progreso conserva el mismo rectángulo al cambiar de pestaña. */
+#menu-dialog[open][data-panel="progreso"]{
+ display:flex;flex-direction:column;width:min(1100px,calc(100vw - 24px));
+ height:min(740px,calc(100dvh - 24px));max-height:calc(100dvh - 24px);overflow:hidden;
+}
+#menu-dialog[data-panel="progreso"]>#close-panel{flex-shrink:0;align-self:flex-end;position:relative;top:auto}
+#menu-dialog[data-panel="progreso"] #menu-content{display:flex;flex-direction:column;flex:1;min-height:0;min-width:0;padding-bottom:0;overflow:hidden}
+#menu-dialog[data-panel="progreso"] #menu-content>h1{flex-shrink:0}
+#menu-dialog[data-panel="progreso"] .progression-tabs{flex-shrink:0}
+#menu-dialog[data-panel="progreso"] .progression-grid{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable;scrollbar-width:thin;margin-top:16px}
+#menu-dialog[data-panel="progreso"] .progression-grid>article{min-height:100%;width:100%}
+@media(max-height:450px) and (max-width:360px){
+ #menu-dialog[data-panel="progreso"]{padding:12px}
+ #menu-dialog[data-panel="progreso"]>#close-panel{min-height:30px;padding:6px 10px;font-size:11px}
+ #menu-dialog[data-panel="progreso"] #menu-content>h1{font-size:22px;margin:4px 0}
+ #menu-dialog[data-panel="progreso"] .progression-tabs{margin-top:8px;padding-bottom:6px;gap:4px}
+ #menu-dialog[data-panel="progreso"] .progression-tabs button{min-height:30px;padding:5px;font-size:11px}
+ #menu-dialog[data-panel="progreso"] .progression-grid{margin-top:10px}
+}

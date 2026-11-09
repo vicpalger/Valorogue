@@ -1,0 +1,197 @@
+/* Invocaciones individuales y tandas: columnas adaptables. */
+.gacha-actions{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;margin:20px 0 10px}
+.gacha-actions label{display:grid;gap:7px;font:11px monospace;color:var(--muted)}
+.gacha-actions select{min-width:150px;min-height:44px;padding:10px 32px 10px 12px;background:#172b39;color:var(--ivory);border:1px solid #526b7c;font:700 15px "Arial Narrow",sans-serif;color-scheme:dark;cursor:pointer}
+.gacha-actions select:focus-visible{outline:2px solid var(--ice);outline-offset:2px}
+.gacha-actions #summon{margin:0;min-height:44px;padding:10px 20px}
+#gacha-funds{font:12px/1.5 monospace;color:var(--muted);margin:0 0 16px}
+#gacha-result{min-width:0;outline:none;scroll-margin-top:84px}
+.gacha-summary{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:20px 0 14px;padding:16px;background:#172b39;border:1px solid var(--line);border-left:3px solid var(--ice)}
+.gacha-summary>strong{font-size:18px;color:var(--ivory)}.gacha-summary>span{font:11px/1.5 monospace;color:var(--muted)}
+.gacha-results-grid,.gacha-roulette-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;min-width:0}
+.gacha-results-grid:has(>:only-child),.gacha-roulette-grid:has(>:only-child){grid-template-columns:minmax(0,1fr)}
+.gacha-results-grid:has(>:only-child){max-width:340px}
+#menu-content .gacha-results-grid>.gacha-reveal{min-width:0;min-height:260px;margin:0;padding:20px;gap:14px;border:1px solid #455e6d;border-top:2px solid var(--rarity);background:linear-gradient(150deg,#192c3a,#101d28);clip-path:var(--cut);box-shadow:none}
+#menu-content .gacha-results-grid .pixel-portrait.large{width:112px;height:112px;margin:8px 0;align-self:center;background:radial-gradient(ellipse,#4d6d7f22,transparent 75%);border:0;box-shadow:none}
+#menu-content .gacha-results-grid .pixel-portrait.large img{width:96px;height:96px;object-fit:contain}
+#menu-content .gacha-results-grid h2{font-size:26px;margin:0;overflow-wrap:anywhere}
+#menu-content .gacha-award{margin-top:auto;display:block;padding:9px 10px;border:1px solid #49616f;font:11px/1.5 monospace;color:var(--muted)}
+#menu-content .gacha-award.new{border-color:#528c87;background:#8ce0df0b;color:var(--ice)}
+.gacha-batch-status{font:13px/1.5 monospace;color:var(--ice)!important;margin:20px 0 12px!important}
+.gacha-roulette-grid>.roulette{margin:0;min-width:0;padding:12px 0;background:#11212e;border:1px solid #455e6d;box-shadow:none}
+.gacha-roulette-grid .roulette-status{font-size:11px;margin-bottom:10px!important}
+.gacha-batch .roulette-tile{flex-basis:92px;gap:6px;padding:10px 5px}
+#menu-content .gacha-batch .roulette-tile .pixel-portrait{width:56px;height:56px;margin:0}
+.gacha-batch .roulette-tile .pixel-portrait img{width:48px;height:48px}
+.gacha-batch .roulette-tile b{font-size:13px}.gacha-batch .roulette-tile .rarity{font-size:8px}
+.gacha-batch .roulette-window{padding:12px 0 8px}
+@media(max-width:900px){.gacha-results-grid,.gacha-roulette-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){
+ .gacha-results-grid,.gacha-roulette-grid{grid-template-columns:minmax(0,1fr)}
+ .gacha-actions{gap:10px}.gacha-actions label,.gacha-actions #summon{flex:1 1 130px}.gacha-actions select{width:100%;min-width:0}.gacha-actions #summon{font-size:13px;padding:10px}
+ #menu-content .gacha-results-grid>.gacha-reveal{display:grid;grid-template-columns:80px minmax(0,1fr);min-height:0;padding:16px;gap:8px 14px}
+ #menu-content .gacha-results-grid .pixel-portrait.large{grid-column:1;grid-row:1/4;width:80px;height:88px;margin:0}
+ #menu-content .gacha-results-grid .pixel-portrait.large img{width:76px;height:76px}
+ #menu-content .gacha-results-grid .rarity{grid-column:2;font-size:8px;padding-right:28px}
+ #menu-content .gacha-results-grid h2{grid-column:2;font-size:23px;align-self:center}
+ #menu-content .gacha-award{grid-column:2;font-size:10px;margin:0;padding:6px}
+ .gacha-summary{padding:12px}.gacha-summary>strong{font-size:16px}.gacha-summary>span{font-size:10px}
+}
+@media(max-width:340px){
+ #menu-content .gacha-results-grid>.gacha-reveal{grid-template-columns:56px minmax(0,1fr);padding:12px;gap:8px}
+ #menu-content .gacha-results-grid .pixel-portrait.large{width:56px;height:70px}#menu-content .gacha-results-grid .pixel-portrait.large img{width:54px;height:54px}
+ #menu-content .gacha-results-grid h2{font-size:20px}#menu-content .gacha-award{font-size:9px}
+}
+
+.gacha-info{margin:18px 0;color:var(--muted);font:12px/1.6 monospace}
+.gacha-info summary{cursor:pointer;width:fit-content;padding:7px 0;color:var(--ice)}
+#menu-content .gacha-info p{font:11px/1.6 monospace;margin:8px 0}
+
+/* Cada tanda ocupa una sola fila: los resultados siempre quedan al lado. */
+.gacha-results-grid,.gacha-roulette-grid{
+ grid-template-columns:none;grid-template-rows:1fr;grid-auto-flow:column;
+ grid-auto-columns:minmax(175px,1fr);overflow-x:auto;overscroll-behavior-x:contain;
+ scroll-snap-type:x proximity;gap:12px;padding-bottom:8px;scrollbar-width:thin;
+}
+.gacha-results-grid>* ,.gacha-roulette-grid>*{scroll-snap-align:start}
+#menu-content .gacha-results-grid>.gacha-reveal{display:flex;flex-direction:column;min-height:250px;padding:16px;gap:12px}
+#menu-content .gacha-results-grid .pixel-portrait.large{width:96px;height:104px;margin:8px 0;align-self:center}
+#menu-content .gacha-results-grid .pixel-portrait.large img{width:88px;height:88px}
+#menu-content .gacha-results-grid .rarity{font-size:8px;padding-right:28px}
+#menu-content .gacha-results-grid h2{font-size:23px;margin:0;align-self:stretch}
+#menu-content .gacha-results-grid .gacha-award{margin-top:auto;font-size:10px;padding:7px}
+
+/* Cada rodillo cae de arriba hacia abajo; la tanda sigue en una sola fila. */
+.gacha-roulette-grid:has(>:only-child){max-width:340px}
+.gacha-roulette-grid .roulette-window{height:220px;padding:0;position:relative}
+.gacha-roulette-grid .roulette-strip{flex-direction:column;align-items:stretch;gap:10px;will-change:transform}
+.gacha-roulette-grid .roulette-tile{flex:0 0 140px;height:140px;min-height:140px;max-height:140px;padding:8px;gap:6px;justify-content:center}
+#menu-content .gacha-roulette-grid .roulette-tile .pixel-portrait{width:72px;height:72px;margin:0}
+.gacha-roulette-grid .roulette-tile .pixel-portrait img{width:64px;height:64px}
+.gacha-roulette-grid .roulette-tile b{font-size:15px}
+.gacha-roulette-grid .roulette-tile .rarity{font-size:9px}
+.gacha-roulette-grid.gacha-batch .roulette-tile{flex-basis:128px;height:128px;min-height:128px;max-height:128px}
+#menu-content .gacha-roulette-grid.gacha-batch .roulette-tile .pixel-portrait{width:56px;height:56px}
+.gacha-roulette-grid.gacha-batch .roulette-tile .pixel-portrait img{width:48px;height:48px}
+.gacha-roulette-grid .roulette-pointer{top:50%;left:4px;transform:translateY(-50%);font-size:18px;line-height:1;z-index:3}
+.gacha-roulette-grid .roulette-window::after{content:"◀";position:absolute;top:50%;right:4px;transform:translateY(-50%);font:18px/1 monospace;color:var(--coral);z-index:3;pointer-events:none}
+.gacha-roulette-grid .roulette-marker{inset:50% 0 auto;transform:translateY(-50%);width:100%;height:140px;background:#ff586507;border-top:1px solid #ff586580;border-bottom:1px solid #ff586580;z-index:1}
+.gacha-roulette-grid.gacha-batch .roulette-marker{height:128px}
+/* Cabecera y filtros fijos; solo se desplaza la colección. */
+#menu-dialog[open]:is([data-panel="gacha"],[data-panel="inventario"]){
+ display:flex;flex-direction:column;height:min(840px,calc(100dvh - 24px));max-height:calc(100dvh - 24px);overflow:hidden;
+}
+#menu-dialog:is([data-panel="gacha"],[data-panel="inventario"])>#close-panel{flex-shrink:0;position:relative;top:auto;align-self:flex-end}
+#menu-dialog:is([data-panel="gacha"],[data-panel="inventario"]) #menu-content{display:flex;flex-direction:column;flex:1;min-height:0;min-width:0;overflow:hidden;padding-bottom:0}
+#menu-dialog:is([data-panel="gacha"],[data-panel="inventario"]) #menu-content>h1,
+#menu-dialog:is([data-panel="gacha"],[data-panel="inventario"]) .gacha-actions,
+#menu-dialog:is([data-panel="gacha"],[data-panel="inventario"]) #gacha-funds,
+#menu-dialog:is([data-panel="gacha"],[data-panel="inventario"]) .gacha-info,
+#menu-dialog:is([data-panel="gacha"],[data-panel="inventario"]) .agent-filters,
+#menu-dialog:is([data-panel="gacha"],[data-panel="inventario"]) .inventory-tabs{flex-shrink:0}
+.collection-scroll{position:relative;flex:1;min-width:0;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable;scrollbar-width:thin;margin-top:16px}
+.collection-scroll:focus-visible{outline:1px solid var(--ice);outline-offset:-2px}
+#menu-content .collection-scroll>.collection{margin-top:0;align-content:start}
+.collection-scroll #gacha-result{scroll-margin-top:0;margin-bottom:18px}
+.collection-scroll #gacha-result:empty{display:none}
+.collection-scroll .gacha-summary{margin-top:0}
+#menu-dialog[data-panel="gacha"] .gacha-actions{margin:12px 0 4px}
+#menu-dialog[data-panel="gacha"] #gacha-funds{margin:4px 0}
+#menu-dialog[data-panel="gacha"] .gacha-info{margin:6px 0}
+#menu-dialog:is([data-panel="gacha"],[data-panel="inventario"]) .agent-filters{margin-top:10px}
+@media(max-height:550px){
+ #menu-dialog:is([data-panel="gacha"],[data-panel="inventario"]){padding:12px}
+ #menu-dialog:is([data-panel="gacha"],[data-panel="inventario"])>#close-panel{min-height:30px;padding:5px 10px;font-size:11px}
+ #menu-dialog:is([data-panel="gacha"],[data-panel="inventario"]) #menu-content{padding-top:0}
+ #menu-dialog:is([data-panel="gacha"],[data-panel="inventario"]) #menu-content>h1{font-size:24px;margin:3px 0}
+ #menu-dialog[data-panel="gacha"] .gacha-actions{margin:6px 0 2px;gap:8px;flex-wrap:nowrap}
+ #menu-dialog[data-panel="gacha"] .gacha-actions label{flex:0 1 100px}
+ #menu-dialog[data-panel="gacha"] .gacha-actions select{min-height:32px;padding:5px 18px 5px 8px;min-width:0;font-size:12px}
+ #menu-dialog[data-panel="gacha"] .gacha-actions #summon{min-height:32px;font-size:12px;padding:6px 10px}
+ #menu-dialog[data-panel="gacha"] .gacha-info{margin:2px 0;font-size:10px}
+ #menu-dialog[data-panel="gacha"] .gacha-info summary{padding:4px 0}
+ #menu-dialog[data-panel="gacha"] .gacha-info p{font-size:10px;margin:3px 0;line-height:1.35}
+ #menu-dialog:is([data-panel="gacha"],[data-panel="inventario"]) .agent-filters{display:grid;grid-template-columns:repeat(2,minmax(0,1fr)) auto;gap:6px;margin-top:6px;align-items:end}
+ #menu-dialog:is([data-panel="gacha"],[data-panel="inventario"]) .agent-filters label{font-size:8px;gap:4px;min-width:0}
+ #menu-dialog:is([data-panel="gacha"],[data-panel="inventario"]) .agent-filters input,
+ #menu-dialog:is([data-panel="gacha"],[data-panel="inventario"]) .agent-filters select{height:32px;min-height:32px;padding:5px;font-size:11px;width:100%;min-width:0}
+ #menu-dialog:is([data-panel="gacha"],[data-panel="inventario"]) #agent-count{font-size:8px;padding:8px 0;white-space:nowrap}
+ .collection-scroll{margin-top:8px}
+}
+@media(max-height:450px) and (max-width:360px){
+ #menu-dialog[data-panel="gacha"] .gacha-info{position:relative}
+ #menu-dialog[data-panel="gacha"] .gacha-info[open] .gacha-probabilities{position:absolute;top:100%;left:0;z-index:5;width:min(300px,calc(100vw - 52px));max-height:calc(100dvh - 110px);overflow:auto;padding:10px;background:#122532;border:1px solid #526b7c;box-shadow:0 8px 20px #0008}
+}
+
+/* Una invocación usa el scroll vertical de la colección, sin carril horizontal. */
+.gacha-results-grid:has(>:only-child),
+.gacha-roulette-grid:has(>:only-child){
+ grid-auto-flow:row;
+ grid-template-columns:minmax(0,1fr);
+ grid-template-rows:auto;
+ grid-auto-columns:auto;
+ width:100%;
+ max-width:340px;
+ overflow:clip;
+ scroll-snap-type:none;
+ padding-bottom:0;
+}
+.gacha-roulette-grid:has(>:only-child) .roulette-window{overflow:hidden}
+
+/* Solo la invocación individual gira de izquierda a derecha. */
+.gacha-roulette-grid:has(>:only-child){max-width:none}
+.gacha-roulette-grid:has(>:only-child) .roulette-strip{flex-direction:row;align-items:stretch}
+.gacha-roulette-grid:has(>:only-child) .roulette-tile{flex:0 0 160px;width:160px;height:220px;min-height:220px;max-height:220px}
+.gacha-roulette-grid:has(>:only-child) .roulette-pointer{top:4px;left:50%;transform:translateX(-50%) rotate(90deg)}
+.gacha-roulette-grid:has(>:only-child) .roulette-window::after{top:auto;bottom:4px;right:auto;left:50%;transform:translateX(-50%) rotate(90deg)}
+.gacha-roulette-grid:has(>:only-child) .roulette-marker{inset:0 auto 0 50%;transform:translateX(-50%);width:160px;height:100%;border:0;border-left:1px solid #ff586580;border-right:1px solid #ff586580}
+
+/* Armería sin desplazamiento: páginas cuando el espacio es reducido. */
+#menu-dialog[data-panel="tienda"]{overflow:hidden;padding:18px}
+#menu-dialog[data-panel="tienda"] #menu-content{overflow:visible;padding-bottom:0}
+#menu-dialog[data-panel="tienda"] h1{margin:4px 0;font-size:28px}
+#menu-dialog[data-panel="tienda"] .shop-summary{margin-top:8px;padding:8px 12px}
+#menu-dialog[data-panel="tienda"] .weapon-collection{margin-top:12px;gap:12px}
+#menu-content .weapon-card[hidden],.shop-pages[hidden]{display:none}
+#menu-dialog[data-panel="tienda"] .weapon-card{padding:12px;gap:8px}
+#menu-dialog[data-panel="tienda"] .weapon-card .weapon-portrait{height:56px}
+#menu-dialog[data-panel="tienda"] .weapon-portrait img{height:52px}
+#menu-dialog[data-panel="tienda"] .weapon-card h2{margin:0;font-size:22px}
+#menu-dialog[data-panel="tienda"] .weapon-specs{padding:8px;gap:6px}
+#menu-dialog[data-panel="tienda"] .weapon-specs dd{font-size:18px}
+#menu-dialog[data-panel="tienda"] .weapon-card>button{margin:0;padding:8px;min-height:34px}
+.shop-pages{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:10px;font:12px monospace}
+.shop-pages button{padding:4px 16px;min-height:30px}
+/* Todas las casillas del inventario comparten ancho, altura y alineación. */
+#menu-dialog[data-panel="inventario"] #menu-content .weapon-collection{grid-template-columns:repeat(auto-fill,minmax(min(225px,100%),1fr));grid-auto-rows:320px;align-items:stretch}
+#menu-dialog[data-panel="inventario"] #menu-content .weapon-card{display:grid;grid-template-rows:88px 32px 100px 40px;gap:8px;padding:16px;height:320px;box-sizing:border-box}
+#menu-dialog[data-panel="inventario"] .weapon-card .rarity{line-height:16px;letter-spacing:1px}
+#menu-dialog[data-panel="inventario"] .weapon-card .weapon-portrait{height:88px;min-width:0}
+#menu-dialog[data-panel="inventario"] .weapon-card .weapon-portrait img{height:80px}
+#menu-dialog[data-panel="inventario"] .weapon-card h2{margin:0;font-size:25px}
+#menu-dialog[data-panel="inventario"] .weapon-card .weapon-specs{padding:8px;gap:6px}
+#menu-dialog[data-panel="inventario"] .weapon-card button{margin:0;padding:8px}
+@media(max-height:450px){
+ #menu-dialog[data-panel="tienda"]{padding:8px}
+ #menu-dialog[data-panel="tienda"]>#close-panel{min-height:26px;padding:3px 10px;float:right}
+ #menu-dialog[data-panel="tienda"] h1{font-size:20px}
+ #menu-dialog[data-panel="tienda"] .shop-summary{font-size:10px;margin-top:4px;padding:4px 8px}
+ #menu-dialog[data-panel="tienda"] .shop-summary strong{font-size:14px}
+ #menu-dialog[data-panel="tienda"] .weapon-collection{margin-top:6px;gap:6px}
+ #menu-dialog[data-panel="tienda"] .weapon-card{padding:8px;gap:4px}
+ #menu-dialog[data-panel="tienda"] .weapon-card .weapon-portrait{height:30px}
+ #menu-dialog[data-panel="tienda"] .weapon-portrait img{height:28px}
+ #menu-dialog[data-panel="tienda"] .weapon-specs{grid-template-columns:repeat(4,minmax(0,1fr));padding:4px;gap:4px}
+ #menu-dialog[data-panel="tienda"] .weapon-specs dt{font-size:8px}
+ #menu-dialog[data-panel="tienda"] .weapon-specs dd{font-size:14px}
+ #menu-dialog[data-panel="tienda"] .weapon-card h2{font-size:18px}
+ #menu-dialog[data-panel="tienda"] .rarity{font-size:8px;letter-spacing:0}
+ .shop-pages{margin-top:4px}
+}
+@media(max-height:450px){
+ #menu-dialog[data-panel="tienda"] #menu-content>h1{font-size:16px;line-height:22px;letter-spacing:0;white-space:nowrap;margin:0 68px 8px 0}
+ #menu-dialog[data-panel="tienda"]>#close-panel{font-size:10px;min-height:24px}
+ #menu-dialog[data-panel="tienda"] .shop-summary{flex-wrap:nowrap;gap:6px;line-height:12px;font-size:9px}
+ #menu-dialog[data-panel="tienda"] .shop-summary strong{font-size:12px}
+}
+@media(max-height:450px){#menu-dialog[data-panel="tienda"] #menu-content>h1{margin-bottom:2px}}

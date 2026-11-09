@@ -46,4 +46,4 @@ const AGENTS = agentDefinitions.map(([id, name, tier, skill, cooldown, descripti
 const legacyAgents = { brizna: 'sage', rafaga: 'jett', ascua: 'phoenix', sol: 'omen', nova: 'reyna' };
 function migrateAgentId(id) { return legacyAgents[id] || id; }
 function formatChance(chance) { return Number(chance.toFixed(3)).toLocaleString('es-ES', { maximumFractionDigits: 3 }); }
-function agentSkillDetails(hero) { return `<div class="agent-skill-info"><span class="skill-key">E</span><div><strong>${hero.skill}</strong><p>${hero.description}</p><small>Recarga: ${(hero.cooldown*Math.pow(.95,progress.upgrades.ability||0)).toFixed(1)} s · Adaptación para esta arena</small></div></div>`; }
+function agentSkillDetails(hero) { return `<div class="agent-skill-info"><span class="skill-key">E</span><div><strong>${hero.skill}</strong><p>${hero.description}</p><small>Recarga: ${(hero.cooldown*Math.pow(.95,progress.upgrades.ability||0)).toFixed(1)} s</small></div></div>`; }

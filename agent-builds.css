@@ -1,0 +1,34 @@
+/* Q comparte la franja reservada con arma, E y X. */
+.arena>.combat-hud{grid-template-columns:minmax(160px,1.1fr) repeat(3,minmax(160px,1fr))}
+.arena>.combat-hud #secondary{grid-column:2;grid-row:1!important}
+.arena>.combat-hud #ability{grid-column:3;grid-row:1!important}
+.arena>.combat-hud #ultimate{grid-column:4;grid-row:1!important}
+.secondary-hud{border-left:2px solid var(--ice)}
+.agent-upgrade-card{border-color:#8ce0df!important}
+.upgrade-panel .agent-upgrade-card .upgrade-icon>.pixel-portrait{width:100%;height:100%;margin:0;border:0;background:none;box-shadow:none;clip-path:none}
+.upgrade-panel .agent-upgrade-card .upgrade-icon>.pixel-portrait img{width:90%;height:90%;object-fit:contain;image-rendering:pixelated}
+.agent-upgrade-info{border:1px solid var(--line);background:#0d1b27;padding:12px;font-size:13px}
+.agent-upgrade-info summary{cursor:pointer;color:var(--ice);line-height:1.5;font-weight:700}
+.agent-upgrade-info>p{font-size:12px!important;color:var(--muted)!important}
+.agent-upgrade-info>div{padding:12px 0;border-top:1px solid var(--line)}
+.agent-upgrade-info>div:first-of-type{margin-top:12px}
+.agent-upgrade-info>div p{font-size:12px!important;margin:6px 0 0!important;line-height:1.5!important}
+@media(max-width:1000px){.arena>.combat-hud{grid-template-columns:repeat(4,minmax(0,1fr))}.arena>.combat-hud .weapon-hud{grid-template-columns:minmax(0,1fr)}.arena>.combat-hud #weapon-ammo{grid-column:1;grid-row:2}.arena>.combat-hud #weapon-state{display:none}.arena>.combat-hud .ability-hud strong{font-size:11px}}
+@media(max-width:650px){
+ .arena>.combat-hud{grid-template-columns:repeat(2,minmax(0,1fr));grid-template-rows:auto auto}
+ .arena>.combat-hud .weapon-hud{grid-column:1;grid-row:1;grid-template-columns:minmax(0,1fr) auto;min-height:43px}
+ .arena>.combat-hud #weapon-ammo{grid-column:2;grid-row:1}
+ .arena>.combat-hud #secondary{grid-column:2;grid-row:1!important}
+ .arena>.combat-hud #ability{grid-column:1;grid-row:2!important}
+ .arena>.combat-hud #ultimate{grid-column:2;grid-row:2!important}
+ .arena>.combat-hud .ability-hud{min-height:43px}.arena>.combat-hud .ability-hud strong{font-size:10px}
+}
+@media(max-height:500px) and (min-width:520px){
+ .arena>.combat-hud{grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:auto}
+ .arena>.combat-hud .weapon-hud{grid-column:1;grid-row:1;grid-template-columns:minmax(0,1fr)}
+ .arena>.combat-hud #weapon-ammo{grid-column:1;grid-row:2}
+ .arena>.combat-hud #secondary{grid-column:2;grid-row:1!important}
+ .arena>.combat-hud #ability{grid-column:3;grid-row:1!important}
+ .arena>.combat-hud #ultimate{grid-column:4;grid-row:1!important}
+ .arena>.combat-hud .ability-hud strong{font-size:10px}
+}

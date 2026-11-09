@@ -1,4 +1,4 @@
-# Última chispa
+# Valorogue
 
 Roguelike de arena para navegador, hecho con HTML, CSS y Canvas 2D sin dependencias. Interfaz táctica con gráficos pixel art originales.
 
@@ -137,3 +137,21 @@ Al cambiar de tamaño u orientación se conservan vida, nivel, tiempos, mapa y m
 Verificación de adaptación: 27 tamaños, de 240 × 320 a 3840 × 2160, incluyendo móvil vertical/horizontal, tablet, ventanas bajas y ultrapanorámica. Se comprobaron inicio, gacha, inventario, tienda, ambas páginas del taller, las cuatro pestañas de Progreso, información de agente, HUD, pausa, mejoras, artefactos y derrota/estadísticas. También se probaron botones accesibles tras desplazar el panel, densidad de pantalla 2×, cambio de orientación en plena partida y regresión de los 30 agentes y las ráfagas.
 
 El HUD final se distribuye en dos franjas reservadas mediante `hud-layout.css`: vida/XP/estado arriba y arma/E/X abajo. El Canvas ocupa exclusivamente la fila central de la arena; ningún indicador queda encima del mapa. La barra del jefe también forma parte de la franja superior. Se verificó la separación entre HUD y Canvas en escritorio, móvil y horizontal, además del apuntado con el nuevo desplazamiento del Canvas y los botones E/X.
+
+## Assets originales de las mejoras
+
+Las 13 imágenes de `assets/mejoras/` se usan directamente en las cartas de subida de nivel y en sus equivalentes permanentes. `upgradeAssets` en `pixel-art.js` relaciona cada símbolo con su PNG; no se redibujan ni se reducen al lienzo de 32 px. Se mantienen los originales y se ajusta su tamaño mediante CSS, con carga diferida y decodificación asíncrona. Prospección Kingdom usa `assets/Kingdom_Credits.webp`. Los artefactos mantienen su iconografía independiente.
+
+## Tandas de gacha
+
+En Gacha puedes elegir entre 1 y 5 invocaciones, a 50 KC cada una (máximo 250 KC). Se exige el coste completo antes de comenzar; cada repetido devuelve 20 KC, incluidos los repetidos dentro de la misma tanda. Toda la tanda se guarda antes de animar. Las ruletas giran en paralelo y los resultados aparecen en una sola fila horizontal, con desplazamiento lateral en pantallas pequeñas, con resumen de nuevos/repetidos y acceso a información mediante el botón i. Las probabilidades de cada invocación se mantienen.
+
+La interfaz elimina encabezados decorativos e instrucciones duplicadas del inicio, gacha, inventario, taller y HUD. Las instrucciones están en Cómo jugar; precios, estadísticas, efectos y avisos de pérdida de progreso permanecen visibles cuando son necesarios. Los rodillos de gacha giran verticalmente hacia abajo y las tandas (máximo cinco) se mantienen en una fila horizontal.
+
+En Gacha e Inventario la cabecera y los filtros permanecen fijos; solo se desplaza la colección (agentes, armas y resultados). Durante la partida se oculta la cabecera de la web y Pausar se sitúa en el HUD; Esc y P siguen funcionando.
+
+## Especializaciones de agente
+
+`agent-builds.js` añade Q a los 30 agentes y 120 mejoras exclusivas (2–6 por agente según rareza). Cada nivel y renovación tiene un 25 % de probabilidad de ofrecer una opción exclusiva junto a las mejoras normales. Cada exclusiva se elige una vez, dura esa partida y respeta el límite de rareza. La ficha i muestra las tres habilidades y el catálogo de mejoras. Jett puede combinar sus dos mejoras propias con Vendaval.
+
+La Q se activa con la tecla Q o su botón, tiene su propia recarga y comparte la franja reservada del HUD con el arma, E y X. Cámara/ancla de Q y marca de E son independientes y se recolocan al redimensionar. Las mejoras normales de recarga de E no reducen Q; Técnica ágil sí lo hace. Consulta PERSONAJES.md para los efectos y costes actuales.

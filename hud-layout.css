@@ -96,3 +96,9 @@ body:not(.in-menu) .arena{
  .arena>.combat-hud .ability-hud{gap:3px;padding-left:4px;padding-right:4px}.arena>.combat-hud .ability-hud kbd{width:16px;height:19px;flex-basis:16px;font-size:10px}
  .arena>.combat-hud .ability-hud strong{font-size:9px}.arena>.combat-hud .ability-hud small{font-size:6px}
 }
+
+/* La cabecera pertenece al menú; la partida ocupa toda la ventana. */
+body:not(.in-menu)>header{display:none}
+body:not(.in-menu) main{height:100dvh}
+.arena>.hud .stats #pause{position:relative;grid-column:1/-1;justify-self:end;min-height:28px;margin:0 0 0 8px;padding:5px 10px;font-size:10px;line-height:1.2;pointer-events:auto;letter-spacing:.5px}
+@media(max-width:650px){.arena>.hud .stats #pause{min-height:24px;padding:4px 8px;margin:2px 0 0;font-size:9px}}

@@ -54,7 +54,7 @@ function nextShopRefresh(date=new Date()){
     while(high-low>1){const mid=Math.floor((high+low)/2);if(shopDay(new Date(mid))===day)low=mid;else high=mid;}
     return high;
 }
-let displayedShopDay='',shopRefreshAt=0,shopMessage='',inventoryPage='agents';
+let displayedShopDay='',shopRefreshAt=0,shopMessage='',inventoryPage='agents',shopPage=0;
 function buyWeapon(id,date=new Date()){
     if(state!=='menu'||currentTab!=='tienda')return false;
     const weapon=WEAPONS.find(w=>w.id===id);
@@ -70,16 +70,28 @@ function equipWeapon(id){
 }
 function weaponCard(weapon,shop=false){
     const owned=shop?progress.ownedWeapons.includes(weapon.id):hasWeapon(weapon.id),equipped=progress.selectedWeapon===weapon.id;
-    return `<article class="hero-card weapon-card"><span class="rarity">${weapon.category} · ${weaponMode(weapon)}</span><div class="weapon-portrait">${weaponPortrait(weapon)}</div><h2>${weapon.name}</h2><dl class="weapon-specs"><div><dt>Daño${weapon.pellets>1?' / perdigón':''}</dt><dd>${weapon.damage}${weapon.pellets>1?` × ${weapon.pellets}`:''}</dd></div><div><dt>Cadencia</dt><dd>${(1/weapon.rate).toFixed(1)} /s</dd></div><div><dt>Cargador</dt><dd>${weapon.magazine||'—'}</dd></div><div><dt>${weapon.mode==='melee'?'Alcance':'Recarga'}</dt><dd>${weapon.mode==='melee'?'58 px':`${weapon.reload} s`}</dd></div></dl>${shop?`<button data-purchase-weapon="${weapon.id}" ${owned||progress.coins<weapon.price?'disabled':''}>${owned?'Ya está en tu inventario':`Comprar · KC ${weapon.price}`}</button>`:`<button data-equip-weapon="${weapon.id}" ${equipped?'disabled':''}>${equipped?'Equipada':'Equipar'}</button>`}</article>`;
+    return `<article class="hero-card weapon-card"><div class="weapon-portrait">${weaponPortrait(weapon)}</div><h2>${weapon.name}</h2><dl class="weapon-specs"><div><dt>Daño${weapon.pellets>1?' / perdigón':''}</dt><dd>${weapon.damage}${weapon.pellets>1?` × ${weapon.pellets}`:''}</dd></div><div><dt>Cadencia</dt><dd>${(1/weapon.rate).toFixed(1)} /s</dd></div><div><dt>Cargador</dt><dd>${weapon.magazine||'—'}</dd></div><div><dt>${weapon.mode==='melee'?'Alcance':'Recarga'}</dt><dd>${weapon.mode==='melee'?'58 px':`${weapon.reload} s`}</dd></div></dl>${shop?`<button data-purchase-weapon="${weapon.id}" ${owned||progress.coins<weapon.price?'disabled':''}>${owned?'Ya está en tu inventario':`Comprar · KC ${weapon.price}`}</button>`:`<button data-equip-weapon="${weapon.id}" ${equipped?'disabled':''}>${equipped?'Equipada':'Equipar'}</button>`}</article>`;
 }
 function shopScreen(date=new Date()){
     displayedShopDay=shopDay(date);shopRefreshAt=nextShopRefresh(date);
-    const dateLabel=new Intl.DateTimeFormat('es-ES',{timeZone:SHOP_ZONE,day:'numeric',month:'long'}).format(date);
-    return `<p class="eyebrow">ARMERÍA / ROTACIÓN DIARIA</p><h1>Tienda de armas</h1><p>Seis armas disponibles el ${dateLabel}. Las compras son permanentes y se guardan en tu inventario.</p><div class="shop-summary"><span>Renovación a las 00:00 · Madrid</span><strong id="shop-countdown"></strong></div><p id="shop-message" role="status">${shopMessage}</p><div class="collection weapon-collection">${dailyWeapons(date).map(w=>weaponCard(w,true)).join('')}</div>`;
+    return `<h1>Tienda de armas</h1><div class="shop-summary"><span>Renovación a las 00:00 · Madrid</span><strong id="shop-countdown"></strong></div><p id="shop-message" role="status">${shopMessage}</p><div class="collection weapon-collection">${dailyWeapons(date).map(w=>weaponCard(w,true)).join('')}</div><nav class="shop-pages" aria-label="Páginas de la tienda"><button id="shop-prev" aria-label="Página anterior">‹</button><span id="shop-page" aria-live="polite"></span><button id="shop-next" aria-label="Página siguiente">›</button></nav>`;
 }
 function inventoryTabs(){return `<div class="inventory-tabs" role="group" aria-label="Tipo de inventario"><button data-inventory="agents" class="${inventoryPage==='agents'?'active':''}" aria-pressed="${inventoryPage==='agents'}">Agentes · ${availableAgents().length}</button><button data-inventory="weapons" class="${inventoryPage==='weapons'?'active':''}" aria-pressed="${inventoryPage==='weapons'}">Armas · ${availableWeapons().length}</button></div>`;}
-function weaponInventory(){return `<p>Equipa un arma para tu próxima partida. La Classic siempre está disponible.</p><div class="collection weapon-collection">${WEAPONS.filter(w=>hasWeapon(w.id)).map(w=>weaponCard(w)).join('')}</div>`;}
+function weaponInventory(){return `<div class="collection-scroll" tabindex="0" role="region" aria-label="Armas del inventario"><div class="collection weapon-collection">${WEAPONS.filter(w=>hasWeapon(w.id)).map(w=>weaponCard(w)).join('')}</div></div>`;}
+function layoutShop(){
+ const grid=document.querySelector('#menu-dialog[data-panel="tienda"] .weapon-collection');if(!grid)return;
+ const columns=innerWidth<600?1:innerWidth<900?2:3,rows=innerHeight>=800&&innerWidth>=600?2:1,size=columns*rows;
+ const cards=[...grid.children],pages=Math.ceil(cards.length/size);shopPage=Math.max(0,Math.min(shopPage,pages-1));
+ grid.style.gridTemplateColumns=`repeat(${columns},minmax(0,1fr))`;
+ cards.forEach((card,i)=>card.hidden=i<shopPage*size||i>=(shopPage+1)*size);
+ const nav=document.querySelector('.shop-pages');nav.hidden=pages===1;
+ document.getElementById('shop-page').textContent=`${shopPage+1} / ${pages}`;
+ const prev=document.getElementById('shop-prev'),next=document.getElementById('shop-next');prev.disabled=shopPage===0;next.disabled=shopPage===pages-1;
+ prev.onclick=()=>{shopPage--;layoutShop();};next.onclick=()=>{shopPage++;layoutShop();};
+}
+window.addEventListener('resize',layoutShop);
 function bindWeaponMenu(){
+ layoutShop();
     lobby.querySelectorAll('[data-purchase-weapon]').forEach(b=>b.onclick=()=>buyWeapon(b.dataset.purchaseWeapon));
     lobby.querySelectorAll('[data-equip-weapon]').forEach(b=>b.onclick=()=>equipWeapon(b.dataset.equipWeapon));
     lobby.querySelectorAll('[data-inventory]').forEach(b=>b.onclick=()=>{inventoryPage=b.dataset.inventory;showMenu('inventario');});
@@ -124,8 +136,9 @@ function updateWeaponHUD(){
     document.getElementById('weapon-hud').classList.toggle('evolved',evolved.length>0);
     document.getElementById('weapon-hud').title=evolved.map(e=>e.name+': '+e.desc).join(' · ');
     document.getElementById('weapon-ammo').textContent=weapon.magazine?`${player.ammo} / ${magazineCapacity()}`:'∞';
-    const alternate=alternateFire[weapon.id],hint=alternate?` · Derecho: ${alternate.kind==='burst'?'ráfaga':'triple'} ×${alternate.rounds}`:'';
-    document.getElementById('weapon-state').textContent=player.reloadLeft>0?`Recargando · ${player.reloadLeft.toFixed(1)} s`:player.burstRemaining>0?'Ráfaga en curso':(weapon.mode==='burst'?`Ráfaga de ${primaryBursts[weapon.id].rounds} por clic`:weapon.mode==='auto'?'Clic mantenido':weapon.mode==='melee'?'Clic · ataque cercano':'Un clic por disparo')+hint+(weapon.magazine?' · R recarga':'');
+    const status=document.getElementById('weapon-state');
+    status.textContent=player.reloadLeft>0?`Recargando · ${player.reloadLeft.toFixed(1)} s`:player.burstRemaining>0?'Ráfaga en curso':'';
+    status.hidden=!status.textContent;
     document.getElementById('weapon-hud').classList.toggle('reloading',player.reloadLeft>0);
 }
 function fireWeapon({secondary=false,burstStep=false}={}){
@@ -146,7 +159,7 @@ function fireWeapon({secondary=false,burstStep=false}={}){
         for(let i=0;i<total&&bullets.length<220;i++){
             const spread=alternate&&alternate.kind==='spread'?alternate.spread:weapon.pellets>1?weapon.spread:.16*(player.shots-1),a=angle+(alternate&&alternate.kind==='spread'?(Math.random()-.5)*spread:total>1?(i/(total-1)-.5)*spread:0)+(weapon.spread&&weapon.pellets===1?(Math.random()-.5)*weapon.spread:0);
             const critical=Math.random()<player.crit;if(runStats)runStats.shots++;
-            bullets.push({playerWeapon:true,critical,x:muzzle.x,y:muzzle.y,vx:Math.cos(a)*weapon.speed,vy:Math.sin(a)*weapon.speed,speed:weapon.speed,life:Math.max(weapon.life,player.artifacts.includes('bounce')?4:0)*player.range,damage:player.damage*(boosted?3:1)*ultMultiplier*(critical?2:1),hit:new Set(),bounces:3});
+            bullets.push({chamberRound:boosted&&activeHero().id==='chamber',agentPiercing:boosted&&activeHero().id==='chamber'&&hasAgentUpgrade(0),playerWeapon:true,critical,x:muzzle.x,y:muzzle.y,vx:Math.cos(a)*weapon.speed,vy:Math.sin(a)*weapon.speed,speed:weapon.speed,life:Math.max(weapon.life,player.artifacts.includes('bounce')?4:0)*player.range,damage:player.damage*(boosted?3:1)*ultMultiplier*(critical?2:1),hit:new Set(),bounces:3});
         }
         player.ammo-=rounds;
     }

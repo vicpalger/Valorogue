@@ -1,0 +1,568 @@
+/* Marco único para todas las secciones del menú, basado en Gacha. */
+#menu-dialog[open][data-panel]{
+ box-sizing:border-box;
+ display:flex;flex-direction:column;
+ width:min(1100px,calc(100vw - 24px));
+ max-width:calc(100vw - 24px);
+ height:min(840px,calc(100dvh - 24px));
+ max-height:calc(100dvh - 24px);
+ margin:auto;padding:28px;overflow:hidden;
+}
+#menu-dialog[data-panel]>#close-panel{
+ position:relative;top:auto;right:auto;float:none;
+ align-self:flex-end;flex-shrink:0;
+}
+#menu-dialog[data-panel] #menu-content{
+ flex:1;min-height:0;min-width:0;overflow:hidden;padding-bottom:0;
+}
+#menu-dialog[data-panel="mejoras"] #menu-content{display:flex;flex-direction:column}
+#menu-dialog[data-panel="mejoras"] #menu-content>h1,
+#menu-dialog[data-panel="mejoras"] .permanent-pages{flex-shrink:0}
+#menu-dialog[data-panel="mejoras"] #menu-content>.collection{
+ min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-width:thin;
+ align-content:start;
+}
+@media(max-height:550px){
+ #menu-dialog[open][data-panel]{padding:12px}
+ #menu-dialog[data-panel]>#close-panel{min-height:30px;padding:5px 10px;font-size:11px}
+}
+/* En ventanas muy bajas, el cierre comparte la fila del título de la tienda. */
+@media(max-height:450px){
+ #menu-dialog[data-panel="tienda"]>#close-panel{position:absolute;top:8px;right:12px;min-height:24px;padding:3px 10px;font-size:10px}
+ #menu-dialog[data-panel="tienda"] #menu-content>h1{padding-right:65px;margin-right:0}
+}
+
+/* El contenido ocupa el espacio del marco; solo se desplazan las listas. */
+#menu-dialog[data-panel] #menu-content{display:flex;flex-direction:column}
+#menu-dialog[data-panel] #menu-content>h1{flex-shrink:0;font-size:clamp(23px,3vw,34px);line-height:1.15;margin:0 0 16px}
+#menu-dialog[data-panel] #menu-content>nav,
+#menu-dialog[data-panel] #menu-content>.shop-summary,
+#menu-dialog[data-panel] #menu-content>.inventory-tabs{flex-shrink:0}
+#menu-dialog[data-panel="tienda"] #menu-content>.weapon-collection{flex:1;min-height:0;grid-auto-rows:minmax(0,1fr);align-items:stretch}
+#menu-dialog[data-panel="tienda"] #menu-content .weapon-card{display:flex;flex-direction:column;min-height:0;padding:16px;gap:10px}
+#menu-dialog[data-panel="tienda"] #menu-content .weapon-card .weapon-portrait{flex:1;min-height:40px;height:auto}
+#menu-dialog[data-panel="tienda"] #menu-content .weapon-card .weapon-portrait img{height:100%;max-height:150px;width:100%;object-fit:contain}
+#menu-dialog[data-panel="tienda"] #menu-content .weapon-card>h2{flex-shrink:0}
+#menu-dialog[data-panel="tienda"] #menu-content .weapon-specs{flex-shrink:0}
+#menu-dialog[data-panel="tienda"] #menu-content .weapon-card>button{flex-shrink:0;width:100%;min-height:36px;margin-top:0}
+#menu-dialog[data-panel="tienda"] .shop-pages{margin-bottom:0}
+#menu-dialog[data-panel="mejoras"] #menu-content>.collection{flex:1;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:minmax(240px,1fr);gap:16px;align-content:stretch;margin-top:16px}
+#menu-dialog[data-panel="mejoras"] #menu-content .permanent-card{display:grid;grid-template-columns:72px minmax(0,1fr);grid-template-rows:auto auto 1fr auto auto;gap:8px 16px;padding:20px;align-content:start}
+#menu-dialog[data-panel="mejoras"] #menu-content .permanent-card>.upgrade-icon{grid-column:1;grid-row:1/3;width:64px;height:64px;margin:0;align-self:center}
+#menu-dialog[data-panel="mejoras"] #menu-content .permanent-card>h2{grid-column:2;grid-row:1;font-size:21px;margin:0;align-self:end}
+#menu-dialog[data-panel="mejoras"] #menu-content .permanent-card>p{grid-column:2;grid-row:2;min-height:0;margin:0;font-size:13px;line-height:1.45}
+#menu-dialog[data-panel="mejoras"] #menu-content .permanent-card>.upgrade-stat{grid-column:1/-1;grid-row:3;align-self:end;margin-top:4px}
+#menu-dialog[data-panel="mejoras"] #menu-content .permanent-card>.permanent-level{grid-column:1;grid-row:4;align-self:center}
+#menu-dialog[data-panel="mejoras"] #menu-content .permanent-card>.permanent-level-label{grid-column:2;grid-row:4;text-align:right}
+#menu-dialog[data-panel="mejoras"] #menu-content .permanent-card>button{grid-column:1/-1;grid-row:5;margin:0;width:100%;min-height:36px}
+#menu-dialog[data-panel="progreso"] .progression-grid{margin-top:16px}
+#menu-dialog[data-panel="progreso"] .progression-grid>article{box-sizing:border-box;padding:24px}
+#menu-dialog[data-panel="progreso"] .progression-grid>article p{max-width:85ch;line-height:1.6}
+#menu-dialog[data-panel="progreso"] .progression-grid>article select{max-width:100%}
+#menu-dialog[data-panel="progreso"] .progression-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin-top:0}
+#menu-dialog[data-panel="inventario"] .inventory-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin:0 0 4px}
+#menu-dialog[data-panel="gacha"] .agent-filters,
+#menu-dialog[data-panel="inventario"] .agent-filters{display:grid;grid-template-columns:minmax(0,1fr) minmax(130px,.6fr) auto;align-items:end}
+@media(max-width:600px){
+ #menu-dialog[open][data-panel]{padding:14px}
+ #menu-dialog[data-panel] #menu-content>h1{margin-bottom:10px}
+ #menu-dialog[data-panel="mejoras"] #menu-content>.collection{grid-template-columns:minmax(0,1fr);grid-auto-rows:minmax(225px,auto);gap:10px;margin-top:10px;align-content:start}
+ #menu-dialog[data-panel="mejoras"] #menu-content .permanent-card{grid-template-columns:48px minmax(0,1fr);padding:12px;gap:7px 10px}
+ #menu-dialog[data-panel="mejoras"] #menu-content .permanent-card>.upgrade-icon{width:44px;height:44px}
+ #menu-dialog[data-panel="mejoras"] #menu-content .permanent-card>h2{font-size:18px}
+ #menu-dialog[data-panel="mejoras"] #menu-content .permanent-card>p{font-size:12px}
+ #menu-dialog[data-panel="progreso"] .progression-grid>article{padding:12px}
+ #menu-dialog[data-panel="progreso"] .progression-tabs{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+ #menu-dialog[data-panel="gacha"] .agent-filters,
+ #menu-dialog[data-panel="inventario"] .agent-filters{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+ #menu-dialog[data-panel] #agent-count{grid-column:1/-1;padding:0}
+}
+@media(max-height:550px){
+ #menu-dialog[open][data-panel]{padding:12px}
+ #menu-dialog[data-panel] #menu-content>h1{font-size:22px;margin-bottom:6px}
+ #menu-dialog[data-panel="tienda"] #menu-content .weapon-card{padding:8px;gap:5px}
+ #menu-dialog[data-panel="tienda"] #menu-content .weapon-card .weapon-portrait{min-height:20px}
+ #menu-dialog[data-panel="tienda"] #menu-content .weapon-specs{padding:5px;gap:4px}
+ #menu-dialog[data-panel="tienda"] #menu-content .weapon-card>button{min-height:30px;padding:5px}
+ #menu-dialog[data-panel="gacha"] .agent-filters,
+ #menu-dialog[data-panel="inventario"] .agent-filters{grid-template-columns:repeat(2,minmax(0,1fr)) auto;gap:6px}
+ #menu-dialog[data-panel] #agent-count{grid-column:auto}
+ #menu-dialog[data-panel="progreso"] .progression-tabs{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+@media(max-height:450px){
+ #menu-dialog[data-panel="tienda"] #menu-content>h1{font-size:16px;line-height:22px;margin-bottom:2px}
+}
+
+/* Cabecera común: título y cierre comparten una franja compacta. */
+#menu-dialog[open][data-panel]{position:fixed;padding-top:24px}
+#menu-dialog[data-panel]>#close-panel{
+ position:absolute;top:22px;right:28px;z-index:2;
+ min-height:38px;padding:8px 14px;font-size:13px;
+ background:#192b39;border:1px solid #526a7a;
+}
+#menu-dialog[data-panel]>#close-panel:hover{background:#273c4b;border-color:var(--ice)}
+#menu-dialog[data-panel]>#close-panel:focus-visible{outline:2px solid var(--ice);outline-offset:3px}
+#menu-dialog[data-panel] #menu-content>h1{
+ display:flex;align-items:center;min-height:40px;
+ margin:0 0 18px;padding:0 120px 14px 0;
+ font-size:30px;line-height:1.2;
+ border-bottom:1px solid var(--line);
+}
+#menu-dialog[data-panel] .progression-tabs{gap:8px;padding-bottom:0}
+#menu-dialog[data-panel] .progression-tabs button{min-height:40px;margin:0}
+@media(max-width:600px),(max-height:550px){
+ #menu-dialog[open][data-panel]{padding-top:12px}
+ #menu-dialog[data-panel]>#close-panel{top:12px;right:14px;min-height:32px;padding:6px 10px;font-size:11px}
+ #menu-dialog[data-panel] #menu-content>h1{min-height:34px;font-size:23px;padding-right:95px;padding-bottom:10px;margin-bottom:12px}
+ #menu-dialog[data-panel] .progression-tabs{gap:5px}
+ #menu-dialog[data-panel] .progression-tabs button{min-height:32px;padding:7px 5px;font-size:12px}
+}
+@media(max-height:450px){
+ #menu-dialog[data-panel] #menu-content>h1{min-height:28px;padding-bottom:6px;margin-bottom:6px;font-size:20px}
+ #menu-dialog[data-panel="tienda"] #menu-content>h1{font-size:16px;line-height:22px;padding-right:85px}
+ #menu-dialog[data-panel="tienda"] #menu-content .weapon-card{padding:6px;gap:3px}
+ #menu-dialog[data-panel="tienda"] #menu-content .weapon-card .weapon-portrait{min-height:12px}
+ #menu-dialog[data-panel="tienda"] #menu-content .weapon-card>button{font-size:11px;min-height:26px;padding:4px}
+}
+@media(max-height:450px) and (max-width:360px){
+ #menu-dialog[data-panel="tienda"] #menu-content>h1{font-size:14px}
+}
+
+/* Progreso: tarjetas compactas en lugar de un panel vacío a toda altura. */
+#menu-dialog[data-panel="progreso"] .progression-grid>article{min-height:0;padding:0;border:0;background:none}
+#menu-dialog[data-panel="progreso"] .progression-grid>article[hidden]{display:none}
+#menu-dialog[data-panel="progreso"] .progress-section-heading{
+ display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:6px 16px;
+ position:static;height:auto;min-height:0;padding:0;margin:0 0 16px;background:none;border:0;
+}
+#menu-dialog[data-panel="progreso"] .progress-section-heading h2{margin:0;font-size:23px}
+#menu-dialog[data-panel="progreso"] .progress-section-heading span{font:11px monospace;color:var(--muted)}
+#menu-dialog[data-panel="progreso"] .mission-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+#menu-dialog[data-panel="progreso"] .mission{
+ display:grid;grid-template-columns:1fr auto;grid-template-rows:auto auto auto auto;
+ align-content:start;gap:14px;padding:18px;border:1px solid var(--line);border-top:2px solid var(--coral);background:#132431;
+}
+#menu-dialog[data-panel="progreso"] .mission>strong{grid-column:1/-1;grid-row:1;min-height:42px;line-height:1.4}
+#menu-dialog[data-panel="progreso"] .mission>.mission-reward{grid-column:1/-1;grid-row:2;color:var(--ice);font:700 22px monospace}
+#menu-dialog[data-panel="progreso"] .mission>progress{grid-column:1/-1;grid-row:3;width:100%;margin:0}
+#menu-dialog[data-panel="progreso"] .mission>span{grid-column:1;grid-row:4;align-self:center;font:12px monospace}
+#menu-dialog[data-panel="progreso"] .mission>button{grid-column:2;grid-row:4;min-width:0;width:auto;padding:8px 14px;margin:0}
+.progress-two-columns,.evolution-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+#menu-dialog[data-panel="progreso"] .progress-card{min-width:0;padding:20px;border:1px solid var(--line);background:#132431}
+#menu-dialog[data-panel="progreso"] .progress-card h2,#menu-dialog[data-panel="progreso"] .progress-card h3{margin:0 0 12px;font-size:22px}
+#menu-dialog[data-panel="progreso"] .progress-card p{font-size:13px;line-height:1.5;margin:10px 0 0}
+#menu-dialog[data-panel="progreso"] .progress-card label{display:grid;gap:8px;margin-top:14px;font-size:12px;color:var(--muted)}
+#menu-dialog[data-panel="progreso"] .progress-card select{width:100%;min-width:0;margin:0}
+#menu-dialog[data-panel="progreso"] .mastery-card{display:grid;grid-template-columns:88px minmax(0,1fr);gap:12px;align-content:start}
+#menu-dialog[data-panel="progreso"] .mastery-agent-art{float:none;margin:0;display:block}
+#menu-dialog[data-panel="progreso"] .mastery-agent-art>.pixel-portrait.large{width:88px;height:88px}
+#menu-dialog[data-panel="progreso"] .mastery-agent-art img{width:76px;height:76px}
+#menu-dialog[data-panel="progreso"] .mastery-card>.mastery-progress{grid-column:1/-1;width:100%;max-width:100%;margin:0}
+#menu-dialog[data-panel="progreso"] .mastery-card>label,#menu-dialog[data-panel="progreso"] .mastery-card>p{grid-column:1/-1;margin:0}
+.mastery-value span{display:block;color:var(--ice);margin-top:6px;font:700 18px monospace}
+.difficulty-rewards{display:grid;gap:0;margin:16px 0 0}
+.difficulty-rewards>div{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:10px 0;border-bottom:1px solid var(--line);font-size:13px}
+.difficulty-rewards dd{margin:0;color:var(--ice)}
+#menu-dialog[data-panel="progreso"] .evolution-requirements{color:var(--ice);padding-bottom:10px;border-bottom:1px solid var(--line)}
+#menu-dialog[data-panel="progreso"] .synergy-card{margin-top:14px}
+.synergy-card>div{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+#menu-dialog[data-panel="progreso"] .backup-card{display:flex;flex-direction:column;gap:10px}
+#menu-dialog[data-panel="progreso"] .backup-card p{margin:0 0 8px}
+#menu-dialog[data-panel="progreso"] .backup-card>button,#menu-dialog[data-panel="progreso"] .backup-card>.import-save{margin-top:auto;width:100%;box-sizing:border-box}
+#menu-dialog[data-panel="progreso"] .import-save input{width:100%;max-width:100%;box-sizing:border-box}
+#backup-status:empty{display:none}
+@media(max-width:700px){
+ #menu-dialog[data-panel="progreso"] .mission-cards,.progress-two-columns,.evolution-cards,.synergy-card>div{grid-template-columns:minmax(0,1fr)}
+ #menu-dialog[data-panel="progreso"] .mission{padding:14px;gap:10px}
+ #menu-dialog[data-panel="progreso"] .mission>strong{min-height:0}
+ #menu-dialog[data-panel="progreso"] .progress-card{padding:14px}
+ #menu-dialog[data-panel="progreso"] .progress-section-heading h2{font-size:21px}
+}
+
+/* Las cuatro pestañas de Progreso usan bloques ajustados al contenido. */
+#menu-dialog[data-panel="progreso"] .progression-grid{align-content:start}
+#menu-dialog[data-panel="progreso"] .progress-two-columns{align-items:start}
+#menu-dialog[data-panel="progreso"] .progress-card{padding:16px}
+#menu-dialog[data-panel="progreso"] .mastery-card{grid-template-columns:72px minmax(0,1fr);gap:10px}
+#menu-dialog[data-panel="progreso"] .mastery-agent-art>.pixel-portrait.large{width:72px;height:72px}
+#menu-dialog[data-panel="progreso"] .mastery-agent-art img{width:64px;height:64px}
+#menu-dialog[data-panel="progreso"] .mastery-card>label{grid-template-columns:auto minmax(0,1fr);align-items:center;gap:16px}
+#menu-dialog[data-panel="progreso"] .mastery-card>p{padding-top:8px;border-top:1px solid var(--line)}
+#menu-dialog[data-panel="progreso"] .difficulty-rewards{margin-top:10px}
+#menu-dialog[data-panel="progreso"] .difficulty-rewards>div{padding:8px 0}
+#menu-dialog[data-panel="progreso"] .evolution-cards{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+#menu-dialog[data-panel="progreso"] .evolution-cards .progress-card h3{font-size:18px;margin-bottom:8px}
+#menu-dialog[data-panel="progreso"] .evolution-cards .progress-card p{font-size:12px;margin-top:8px}
+#menu-dialog[data-panel="progreso"] .synergy-card{padding:14px 16px}
+#menu-dialog[data-panel="progreso"] .synergy-card h3{font-size:18px;margin-bottom:6px}
+#menu-dialog[data-panel="progreso"] .synergy-card p{margin:0}
+#menu-dialog[data-panel="progreso"] .backup-card{display:grid;grid-template-columns:minmax(0,1fr);gap:8px;align-content:start}
+#menu-dialog[data-panel="progreso"] .backup-card h3{margin:0;font-size:20px}
+#menu-dialog[data-panel="progreso"] .backup-card>button,
+#menu-dialog[data-panel="progreso"] .backup-card>.import-save{margin:4px 0 0;min-height:40px}
+#menu-dialog[data-panel="progreso"] .backup-card>.import-save{padding:10px;border:1px solid var(--line);background:#0d1c28}
+#menu-dialog[data-panel="progreso"] .backup-card>.import-save input{margin:0;padding:0;font-size:12px}
+@media(max-width:900px){
+ #menu-dialog[data-panel="progreso"] .evolution-cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:700px){
+ #menu-dialog[data-panel="progreso"] .evolution-cards{grid-template-columns:minmax(0,1fr)}
+ #menu-dialog[data-panel="progreso"] .progress-card{padding:12px}
+ #menu-dialog[data-panel="progreso"] .mastery-card>label{gap:8px}
+}
+
+/* Distribución de Progreso a toda altura, sin concentrar todo arriba. */
+#menu-dialog[data-panel="progreso"] .progression-grid{display:flex;flex-direction:column;align-content:stretch}
+#menu-dialog[data-panel="progreso"] .progression-grid>article:not([hidden]){display:flex;flex-direction:column;flex:1;min-height:100%;gap:16px}
+#menu-dialog[data-panel="progreso"] .progress-section-heading{flex-shrink:0;margin:0}
+#menu-dialog[data-panel="progreso"] .mission-cards,
+#menu-dialog[data-panel="progreso"] .progress-two-columns{flex:1;align-items:stretch}
+#menu-dialog[data-panel="progreso"] .mission{grid-template-rows:auto 1fr auto auto;gap:18px;padding:24px}
+#menu-dialog[data-panel="progreso"] .mission>strong{font-size:18px}
+#menu-dialog[data-panel="progreso"] .mission>.mission-reward{align-self:center;text-align:center;font-size:clamp(24px,3.8vw,46px);padding:25px 0;background:radial-gradient(ellipse,#8ce0df12,transparent 70%)}
+#menu-dialog[data-panel="progreso"] .mission>span{font-size:15px}
+#menu-dialog[data-panel="progreso"] .mission>progress{height:12px}
+#menu-dialog[data-panel="progreso"] .progress-card{padding:24px}
+#menu-dialog[data-panel="progreso"] .mastery-card{grid-template-columns:minmax(110px,.8fr) minmax(0,1fr);grid-template-rows:1fr auto auto auto;align-content:stretch;align-items:center;gap:20px}
+#menu-dialog[data-panel="progreso"] .mastery-agent-art{width:100%;display:flex;justify-content:center;align-items:center}
+#menu-dialog[data-panel="progreso"] .mastery-agent-art>.pixel-portrait.large{width:100%;max-width:190px;height:210px;background:radial-gradient(ellipse,#8ce0df18,transparent 75%);border:0}
+#menu-dialog[data-panel="progreso"] .mastery-agent-art img{width:160px;height:180px;object-fit:contain}
+#menu-dialog[data-panel="progreso"] .mastery-card h2{font-size:30px}
+#menu-dialog[data-panel="progreso"] .mastery-value{font-size:16px}
+#menu-dialog[data-panel="progreso"] .mastery-value span{font-size:25px;margin-top:12px}
+#menu-dialog[data-panel="progreso"] .mastery-card>.mastery-progress{height:12px}
+#menu-dialog[data-panel="progreso"] #progression-panel-agente .progress-two-columns>.progress-card:not(.mastery-card){display:flex;flex-direction:column;gap:16px}
+#menu-dialog[data-panel="progreso"] .difficulty-rewards{flex:1;display:flex;flex-direction:column;justify-content:center;gap:16px;margin:0}
+#menu-dialog[data-panel="progreso"] .difficulty-rewards>div{display:grid;gap:10px;padding:20px 16px;background:#0c1b27;border-left:2px solid var(--ice);font-size:16px}
+#menu-dialog[data-panel="progreso"] .difficulty-rewards dd{font-size:18px}
+#menu-dialog[data-panel="progreso"] .evolution-cards{flex:1;grid-template-columns:repeat(3,minmax(0,1fr))}
+#menu-dialog[data-panel="progreso"] .evolution-card{display:flex;flex-direction:column;gap:12px}
+#menu-dialog[data-panel="progreso"] .evolution-card .progress-emblem{flex:1}
+#menu-dialog[data-panel="progreso"] .evolution-card h3{font-size:23px;margin:0}
+#menu-dialog[data-panel="progreso"] .evolution-card p{font-size:14px;margin:0}
+#menu-dialog[data-panel="progreso"] .synergy-card{margin:0;flex-shrink:0}
+#menu-dialog[data-panel="progreso"] .backup-card{display:flex;flex-direction:column;gap:16px}
+#menu-dialog[data-panel="progreso"] .backup-card .progress-emblem{flex:1}
+#menu-dialog[data-panel="progreso"] .backup-card h3{font-size:26px}
+#menu-dialog[data-panel="progreso"] .backup-card p{font-size:15px;min-height:45px}
+#menu-dialog[data-panel="progreso"] .backup-card>button,
+#menu-dialog[data-panel="progreso"] .backup-card>.import-save{margin:0;min-height:64px}
+#menu-dialog[data-panel="progreso"] .progress-emblem{display:flex;align-items:center;justify-content:center;min-height:100px;color:var(--ice);background:radial-gradient(ellipse,#8ce0df0d,transparent 70%)}
+#menu-dialog[data-panel="progreso"] .progress-emblem svg{width:90px;height:90px;max-height:150px}
+@media(max-width:700px),(max-height:600px){
+ #menu-dialog[data-panel="progreso"] .progression-grid>article:not([hidden]){min-height:100%;gap:12px}
+ #menu-dialog[data-panel="progreso"] .mission-cards,
+ #menu-dialog[data-panel="progreso"] .progress-two-columns{flex:0 0 auto}
+ #menu-dialog[data-panel="progreso"] .mission{padding:16px;gap:12px;grid-template-rows:auto auto auto auto}
+ #menu-dialog[data-panel="progreso"] .mission>.mission-reward{font-size:26px;text-align:left;padding:8px 0}
+ #menu-dialog[data-panel="progreso"] .progress-card{padding:16px}
+ #menu-dialog[data-panel="progreso"] .mastery-card{grid-template-columns:88px minmax(0,1fr);gap:14px}
+ #menu-dialog[data-panel="progreso"] .mastery-agent-art>.pixel-portrait.large{height:100px}
+ #menu-dialog[data-panel="progreso"] .mastery-agent-art img{width:80px;height:90px}
+ #menu-dialog[data-panel="progreso"] .mastery-card h2{font-size:23px}
+ #menu-dialog[data-panel="progreso"] .difficulty-rewards{gap:10px}
+ #menu-dialog[data-panel="progreso"] .difficulty-rewards>div{padding:12px;font-size:14px}
+ #menu-dialog[data-panel="progreso"] .difficulty-rewards dd{font-size:15px}
+ #menu-dialog[data-panel="progreso"] .evolution-cards{flex:0 0 auto;grid-template-columns:minmax(0,1fr)}
+ #menu-dialog[data-panel="progreso"] .evolution-card{display:grid;grid-template-columns:48px minmax(0,1fr);gap:10px}
+ #menu-dialog[data-panel="progreso"] .evolution-card .progress-emblem{grid-column:1;grid-row:1/4;min-height:48px}
+ #menu-dialog[data-panel="progreso"] .evolution-card h3,#menu-dialog[data-panel="progreso"] .evolution-card p{grid-column:2}
+ #menu-dialog[data-panel="progreso"] .progress-emblem{min-height:70px}
+ #menu-dialog[data-panel="progreso"] .progress-emblem svg{width:48px;height:48px}
+ #menu-dialog[data-panel="progreso"] .backup-card{gap:10px}
+ #menu-dialog[data-panel="progreso"] .backup-card h3{font-size:22px}
+ #menu-dialog[data-panel="progreso"] .backup-card p{min-height:0;font-size:13px}
+ #menu-dialog[data-panel="progreso"] .backup-card>button,#menu-dialog[data-panel="progreso"] .backup-card>.import-save{min-height:40px}
+}
+
+/* Progreso en franjas horizontales, sin tarjetas altas. */
+#menu-dialog[data-panel="progreso"] .progression-grid>article:not([hidden]){min-height:0;flex:0 0 auto}
+#menu-dialog[data-panel="progreso"] .mission-cards,
+#menu-dialog[data-panel="progreso"] .progress-two-columns,
+#menu-dialog[data-panel="progreso"] .evolution-cards{flex:0 0 auto;grid-template-columns:minmax(0,1fr);gap:12px}
+#menu-dialog[data-panel="progreso"] .mission{grid-template-columns:minmax(0,1.2fr) 110px minmax(100px,1fr) 80px 90px;grid-template-rows:auto;align-items:center;padding:20px;gap:18px}
+#menu-dialog[data-panel="progreso"] .mission>strong,
+#menu-dialog[data-panel="progreso"] .mission>.mission-reward,
+#menu-dialog[data-panel="progreso"] .mission>progress,
+#menu-dialog[data-panel="progreso"] .mission>span,
+#menu-dialog[data-panel="progreso"] .mission>button{grid-column:auto;grid-row:1;min-height:0;margin:0}
+#menu-dialog[data-panel="progreso"] .mission>strong{font-size:16px}
+#menu-dialog[data-panel="progreso"] .mission>.mission-reward{padding:0;font-size:22px;background:none}
+#menu-dialog[data-panel="progreso"] .mastery-card{grid-template-columns:100px minmax(0,1fr) minmax(180px,.8fr);grid-template-rows:auto auto;gap:14px 22px}
+#menu-dialog[data-panel="progreso"] .mastery-agent-art{grid-column:1;grid-row:1/3}
+#menu-dialog[data-panel="progreso"] .mastery-agent-art>.pixel-portrait.large{height:110px}
+#menu-dialog[data-panel="progreso"] .mastery-agent-art img{width:90px;height:100px}
+#menu-dialog[data-panel="progreso"] .mastery-card>div:not(.mastery-agent-art){grid-column:2;grid-row:1}
+#menu-dialog[data-panel="progreso"] .mastery-card>.mastery-progress{grid-column:2;grid-row:2}
+#menu-dialog[data-panel="progreso"] .mastery-card>label{grid-column:3;grid-row:1;display:grid;grid-template-columns:1fr;gap:6px}
+#menu-dialog[data-panel="progreso"] .mastery-card>p{grid-column:3;grid-row:2;font-size:12px;padding:0;border:0}
+#menu-dialog[data-panel="progreso"] #progression-panel-agente .progress-two-columns>.progress-card:not(.mastery-card){display:grid;grid-template-columns:minmax(180px,.8fr) minmax(0,1.4fr);gap:14px 24px;align-items:center}
+#menu-dialog[data-panel="progreso"] #progression-panel-agente .progress-two-columns>.progress-card:not(.mastery-card)>h2{grid-column:1;margin:0}
+#menu-dialog[data-panel="progreso"] #difficulty-select{grid-column:1;grid-row:2}
+#menu-dialog[data-panel="progreso"] .difficulty-rewards{grid-column:2;grid-row:1/3;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#menu-dialog[data-panel="progreso"] #progression-panel-agente .progress-two-columns>.progress-card:not(.mastery-card)>p{grid-column:1/-1;margin:0}
+#menu-dialog[data-panel="progreso"] .evolution-card{display:grid;grid-template-columns:70px minmax(130px,.6fr) minmax(0,1fr) minmax(0,1fr);align-items:center;gap:20px;padding:20px}
+#menu-dialog[data-panel="progreso"] .evolution-card .progress-emblem{grid-column:auto;grid-row:auto;min-height:64px}
+#menu-dialog[data-panel="progreso"] .evolution-card h3,
+#menu-dialog[data-panel="progreso"] .evolution-card p{grid-column:auto;grid-row:auto;margin:0}
+#menu-dialog[data-panel="progreso"] .evolution-card .evolution-requirements{border:0;padding:0}
+#menu-dialog[data-panel="progreso"] .progress-emblem svg{width:56px;height:56px}
+#menu-dialog[data-panel="progreso"] .backup-card{display:grid;grid-template-columns:70px minmax(0,1fr) minmax(200px,.9fr);grid-template-rows:auto auto;gap:8px 24px;align-items:center}
+#menu-dialog[data-panel="progreso"] .backup-card .progress-emblem{grid-column:1;grid-row:1/3;min-height:80px}
+#menu-dialog[data-panel="progreso"] .backup-card h3{grid-column:2;grid-row:1;font-size:23px}
+#menu-dialog[data-panel="progreso"] .backup-card p{grid-column:2;grid-row:2;min-height:0;margin:0;font-size:13px}
+#menu-dialog[data-panel="progreso"] .backup-card>button,
+#menu-dialog[data-panel="progreso"] .backup-card>.import-save{grid-column:3;grid-row:1/3;min-height:44px}
+@media(max-width:800px){
+ #menu-dialog[data-panel="progreso"] .mission{grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto auto;padding:14px;gap:12px}
+ #menu-dialog[data-panel="progreso"] .mission>strong{grid-column:1;grid-row:1}
+ #menu-dialog[data-panel="progreso"] .mission>.mission-reward{grid-column:2;grid-row:1}
+ #menu-dialog[data-panel="progreso"] .mission>progress{grid-column:1/-1;grid-row:2}
+ #menu-dialog[data-panel="progreso"] .mission>span{grid-column:1;grid-row:3}
+ #menu-dialog[data-panel="progreso"] .mission>button{grid-column:2;grid-row:3}
+ #menu-dialog[data-panel="progreso"] .mastery-card{grid-template-columns:72px minmax(0,1fr);grid-template-rows:auto auto auto auto;gap:12px}
+ #menu-dialog[data-panel="progreso"] .mastery-agent-art{grid-row:1/3}
+ #menu-dialog[data-panel="progreso"] .mastery-card>label{grid-column:1/-1;grid-row:3;grid-template-columns:auto minmax(0,1fr)}
+ #menu-dialog[data-panel="progreso"] .mastery-card>p{grid-column:1/-1;grid-row:4}
+ #menu-dialog[data-panel="progreso"] #progression-panel-agente .progress-two-columns>.progress-card:not(.mastery-card){grid-template-columns:minmax(0,1fr)}
+ #menu-dialog[data-panel="progreso"] .difficulty-rewards{grid-column:1;grid-row:3;grid-template-columns:minmax(0,1fr)}
+ #menu-dialog[data-panel="progreso"] .evolution-card{grid-template-columns:48px minmax(0,1fr);gap:10px 14px;padding:14px}
+ #menu-dialog[data-panel="progreso"] .evolution-card .progress-emblem{grid-column:1;grid-row:1/4}
+ #menu-dialog[data-panel="progreso"] .evolution-card h3,#menu-dialog[data-panel="progreso"] .evolution-card p{grid-column:2}
+ #menu-dialog[data-panel="progreso"] .backup-card{grid-template-columns:48px minmax(0,1fr);gap:10px 14px;padding:14px}
+ #menu-dialog[data-panel="progreso"] .backup-card>button,#menu-dialog[data-panel="progreso"] .backup-card>.import-save{grid-column:1/-1;grid-row:3}
+ #menu-dialog[data-panel="progreso"] .progress-emblem svg{width:40px;height:40px}
+}
+#menu-dialog[data-panel="progreso"] .backup-card h3{min-width:0;overflow-wrap:anywhere}
+@media(max-width:360px){#menu-dialog[data-panel="progreso"] .backup-card h3{font-size:19px}}
+
+/* Diarias y semanales en la misma lista, una sección bajo otra. */
+#menu-dialog[data-panel="progreso"] .mission-group{display:grid;gap:12px;min-width:0}
+#menu-dialog[data-panel="progreso"] .mission-group+.mission-group{padding-top:18px;border-top:1px solid var(--line)}
+#menu-dialog[data-panel="progreso"] .mission-group .mission{padding:14px 16px;gap:12px}
+#menu-dialog[data-panel="progreso"] .mission-group .mission>strong{font-size:14px}
+#menu-dialog[data-panel="progreso"] .weekly-mission{grid-template-columns:minmax(0,1.2fr) 180px minmax(80px,1fr) 90px 90px;border-top-color:var(--ice)}
+#menu-dialog[data-panel="progreso"] .weekly-mission>.mission-reward{font-size:14px;line-height:1.4;text-align:left;color:#f3cd71}
+.gacha-tickets{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0;flex-shrink:0}
+.gacha-tickets button{padding:8px 12px;font-size:12px;border-color:#b38e4e;color:#f3cd71}
+@media(max-width:800px){#menu-dialog[data-panel="progreso"] .weekly-mission{grid-template-columns:minmax(0,1fr) auto}#menu-dialog[data-panel="progreso"] .weekly-mission>.mission-reward{max-width:120px}}
+@media(max-width:360px){#menu-dialog[data-panel="progreso"] .weekly-mission>.mission-reward{max-width:84px;font-size:12px}.gacha-tickets{gap:4px}.gacha-tickets button{font-size:10px;padding:5px}}
+#menu-dialog[data-panel="progreso"] .mission-group .progress-section-heading span{min-width:0;overflow-wrap:anywhere}
+#menu-dialog[data-panel="progreso"] .mission-group .mission>*{min-width:0;overflow-wrap:anywhere}
+
+/* Agente: ficha horizontal y selector de dificultad, sin columnas sueltas. */
+#menu-dialog[data-panel="progreso"] #progression-panel-agente{flex:1;min-height:100%}
+.agent-dashboard{display:grid;grid-template-rows:minmax(250px,1.2fr) minmax(230px,1fr);gap:16px;flex:1;min-width:0}
+.agent-mastery-banner{display:grid;grid-template-columns:minmax(140px,.65fr) minmax(0,1.2fr) minmax(180px,.9fr);align-items:center;gap:24px;padding:24px;background:#142532;border:1px solid var(--line);border-top:2px solid var(--agent-color);min-width:0}
+.agent-mastery-portrait{align-self:stretch;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse,#8ce0df14,transparent 75%);min-width:0}
+#menu-dialog[data-panel="progreso"] .agent-mastery-portrait .pixel-portrait.large{width:100%;height:190px;margin:0;display:flex;align-items:center;justify-content:center;border:0;background:none;box-shadow:none;clip-path:none}
+#menu-dialog[data-panel="progreso"] .agent-mastery-portrait img{width:140px;height:170px;object-fit:contain;image-rendering:pixelated}
+.agent-mastery-summary{min-width:0}
+.agent-section-label{font:10px monospace;letter-spacing:1.5px;color:var(--muted)}
+#menu-dialog[data-panel="progreso"] .agent-mastery-summary h2{font-size:32px;margin:10px 0 22px;overflow-wrap:anywhere}
+.agent-xp-heading{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:10px}
+.agent-xp-heading strong{font-size:19px}.agent-xp-heading strong span{color:var(--muted);font-size:14px}
+.agent-xp-heading>span{color:var(--ice);font:700 17px monospace}
+#menu-dialog[data-panel="progreso"] .agent-mastery-summary .mastery-progress{width:100%;max-width:100%;height:10px;margin:0;accent-color:var(--ice)}
+#menu-dialog[data-panel="progreso"] .agent-next-level{font-size:12px;margin:8px 0 16px;color:var(--muted)}
+.agent-mastery-milestones{display:flex;flex-wrap:wrap;gap:8px}
+.agent-mastery-milestones>span{border:1px solid var(--line);padding:6px 9px;font:11px monospace;color:var(--muted)}
+.agent-mastery-milestones>span.unlocked{color:var(--ice);border-color:#538e8c}
+.agent-appearance{border-left:1px solid var(--line);padding-left:24px;min-width:0}
+.agent-appearance label{display:grid;gap:10px;font-size:13px;color:var(--ivory)}
+#menu-dialog[data-panel="progreso"] .agent-appearance select{width:100%;min-width:0}
+#menu-dialog[data-panel="progreso"] .agent-appearance p{font-size:12px;line-height:1.6;margin:18px 0 0;color:var(--muted)}
+.agent-difficulty-panel{display:flex;flex-direction:column;gap:18px;min-width:0}
+.agent-difficulty-heading{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.agent-difficulty-heading h2{font-size:23px;margin:0}
+.agent-difficulty-heading>span{font:11px monospace;color:var(--muted)}
+.agent-difficulty-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;flex:1}
+#menu-dialog[data-panel="progreso"] .difficulty-option{display:flex;flex-direction:column;justify-content:space-between;align-items:stretch;gap:14px;text-align:left;padding:20px;background:#142532;border:1px solid var(--line);min-width:0;white-space:normal;text-transform:none;letter-spacing:0;color:var(--ivory);clip-path:var(--cut)}
+#menu-dialog[data-panel="progreso"] .difficulty-option:disabled{opacity:.7;cursor:default}
+#menu-dialog[data-panel="progreso"] .difficulty-option.selected{border-top:2px solid var(--coral);background:#20303d}
+#menu-dialog[data-panel="progreso"] .difficulty-option:not(:disabled):hover{border-color:var(--ice)}
+.difficulty-option-heading{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.difficulty-option-heading strong{font-size:20px}.difficulty-option-heading>span{font:10px monospace;color:var(--muted)}
+.difficulty-option>b{font-size:17px;color:var(--ice)}
+.difficulty-option-detail{font-size:12px;line-height:1.5;font-weight:400}
+.difficulty-option small{font:10px monospace;color:var(--muted);padding-top:12px;border-top:1px solid var(--line)}
+@media(max-width:800px){
+ .agent-dashboard{grid-template-rows:auto auto}
+ .agent-mastery-banner{grid-template-columns:88px minmax(0,1fr);padding:16px;gap:16px}
+ #menu-dialog[data-panel="progreso"] .agent-mastery-portrait .pixel-portrait.large{height:120px}
+ #menu-dialog[data-panel="progreso"] .agent-mastery-portrait img{width:84px;height:110px}
+ #menu-dialog[data-panel="progreso"] .agent-mastery-summary h2{font-size:25px;margin:8px 0 14px}
+ .agent-appearance{grid-column:1/-1;border-left:0;border-top:1px solid var(--line);padding:14px 0 0}
+ .agent-difficulty-options{grid-template-columns:minmax(0,1fr);gap:10px}
+ #menu-dialog[data-panel="progreso"] .difficulty-option{gap:10px;padding:16px}
+}
+@media(max-width:360px){
+ .agent-mastery-banner{grid-template-columns:minmax(0,1fr);padding:12px;gap:12px}
+ .agent-mastery-portrait{display:flex;justify-content:flex-start}
+ #menu-dialog[data-panel="progreso"] .agent-mastery-portrait .pixel-portrait.large{width:72px;height:80px}
+ #menu-dialog[data-panel="progreso"] .agent-mastery-portrait img{width:64px;height:76px}
+ .agent-xp-heading{flex-wrap:wrap}
+}
+
+/* Arsenal: recetas visuales de izquierda a derecha y sinergias separadas. */
+#menu-dialog[data-panel="progreso"] #progression-panel-arsenal{flex:1;min-height:100%}
+.arsenal-dashboard{display:flex;flex-direction:column;flex:1;gap:16px;min-width:0}
+.arsenal-recipes{display:grid;grid-template-rows:repeat(3,minmax(125px,1fr));gap:12px;flex:1;min-width:0}
+.arsenal-recipe{display:grid;grid-template-columns:minmax(140px,.65fr) minmax(0,1.65fr) 24px minmax(0,1fr);align-items:center;gap:18px;padding:18px;background:#142532;border:1px solid var(--line);border-left:3px solid var(--recipe-color);min-width:0}
+.arsenal-recipe-name{display:flex;align-items:center;gap:12px;min-width:0}
+#menu-dialog[data-panel="progreso"] .arsenal-recipe-name .progress-emblem{min-height:0;background:none;flex:0 0 40px;color:var(--recipe-color)}
+#menu-dialog[data-panel="progreso"] .arsenal-recipe-name .progress-emblem svg{width:38px;height:38px}
+.arsenal-recipe h3{font-size:21px;margin:0;overflow-wrap:anywhere}
+.arsenal-recipe-ingredients{display:flex;align-items:center;gap:10px;min-width:0}
+.arsenal-ingredient{display:flex;align-items:center;gap:8px;min-width:0;flex:1;padding:10px;background:#0d1d29;border:1px solid #344b5b;min-height:64px;box-sizing:border-box}
+.arsenal-ingredient img{width:36px;height:36px;object-fit:contain;flex-shrink:0}
+.arsenal-ingredient>span{font-size:12px;line-height:1.4;min-width:0;overflow-wrap:anywhere}
+.arsenal-ingredient b{display:block;color:var(--recipe-color);font:700 15px monospace;margin-top:4px}
+.recipe-plus{color:var(--muted);font:18px monospace}
+.recipe-arrow{font-size:24px;color:var(--recipe-color)}
+.arsenal-recipe-effect>span{font:10px monospace;letter-spacing:1px;color:var(--recipe-color)}
+#menu-dialog[data-panel="progreso"] .arsenal-recipe-effect p{font-size:13px;line-height:1.5;margin:8px 0 0}
+.arsenal-synergies{flex-shrink:0}
+.arsenal-synergies>h2{font-size:22px;margin:0 0 12px}
+.arsenal-synergies>div{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.arsenal-synergy{display:flex;align-items:center;gap:16px;padding:18px;background:#142532;border:1px solid var(--line);min-width:0}
+#menu-dialog[data-panel="progreso"] .arsenal-synergy .progress-emblem{min-height:0;flex:0 0 36px;background:none}
+#menu-dialog[data-panel="progreso"] .arsenal-synergy .progress-emblem svg{width:32px;height:32px}
+.arsenal-synergy>div{min-width:0}
+.arsenal-synergy h3{font-size:18px;margin:0 0 8px}
+#menu-dialog[data-panel="progreso"] .arsenal-synergy p{font-size:12px;line-height:1.5;margin:4px 0 0}
+.arsenal-synergy .synergy-needs{color:var(--ice)}
+@media(max-width:1000px){
+ .arsenal-recipe{grid-template-columns:150px minmax(0,1fr);gap:14px}
+ .arsenal-recipe-name{grid-column:1;grid-row:1/3;flex-direction:column;align-items:flex-start}
+ .arsenal-recipe-ingredients{grid-column:2;grid-row:1}
+ .recipe-arrow{display:none}
+ .arsenal-recipe-effect{grid-column:2;grid-row:2}
+}
+@media(max-width:700px){
+ .arsenal-recipes{grid-template-rows:none;flex:0 0 auto}
+ .arsenal-recipe{grid-template-columns:minmax(0,1fr);padding:14px;gap:14px}
+ .arsenal-recipe-name{grid-column:1;grid-row:1;flex-direction:row;align-items:center}
+ .arsenal-recipe-ingredients{grid-column:1;grid-row:2;gap:6px}
+ .arsenal-recipe-effect{grid-column:1;grid-row:3;border-top:1px solid var(--line);padding-top:12px}
+ .arsenal-ingredient{flex-direction:column;align-items:flex-start;padding:8px}
+ .arsenal-synergies>div{grid-template-columns:minmax(0,1fr)}
+ .arsenal-synergy{padding:14px;gap:12px}
+}
+
+/* Guardado: tres acciones horizontales que aprovechan el panel completo. */
+#menu-dialog[data-panel="progreso"] #progression-panel-guardado{flex:1;min-height:100%}
+.save-dashboard{display:flex;flex-direction:column;flex:1;gap:16px;min-width:0}
+.save-actions{display:grid;grid-template-rows:repeat(3,minmax(145px,1fr));gap:14px;flex:1}
+.save-action{display:grid;grid-template-columns:86px minmax(0,1fr) minmax(180px,.55fr);gap:24px;align-items:center;padding:24px;border:1px solid var(--line);background:#142532;border-left:3px solid var(--ice);min-width:0}
+#menu-dialog[data-panel="progreso"] .save-action .progress-emblem{min-height:0;background:none;color:var(--ice)}
+#menu-dialog[data-panel="progreso"] .save-action .progress-emblem svg{width:54px;height:54px}
+.save-action-copy{min-width:0}
+.save-action-copy h3{font-size:25px;margin:0 0 12px;overflow-wrap:anywhere}
+#menu-dialog[data-panel="progreso"] .save-action-copy p{font-size:13px;line-height:1.6;color:var(--muted);margin:0}
+#menu-dialog[data-panel="progreso"] .save-action-button{box-sizing:border-box;display:flex;align-items:center;justify-content:center;min-height:48px;width:100%;margin:0;padding:12px 16px;font-size:14px;background:#1b2e3c;border:1px solid #526c7c;color:var(--ivory);cursor:pointer;clip-path:var(--cut);text-align:center}
+#menu-dialog[data-panel="progreso"] .save-action-button:hover:not(:disabled){border-color:var(--ice);background:#253d4b}
+.save-import{position:relative;overflow:hidden;font-weight:700}
+.save-import input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+.save-import:focus-within{outline:2px solid var(--ice);outline-offset:3px}
+.save-action.save-reset{border-left-color:var(--coral);background:linear-gradient(110deg,#ff586509,#142532 60%)}
+#menu-dialog[data-panel="progreso"] .save-reset .progress-emblem{color:var(--coral)}
+#menu-dialog[data-panel="progreso"] .save-reset>.save-action-button{border-color:#b75c66;color:#ffadb4;background:#ff58650c}
+.save-reset-confirmation{grid-column:1/-1;padding:16px;border:1px solid #b75c66;background:#271c27}
+.save-reset-confirmation[hidden],.save-action-button[hidden]{display:none!important}
+#menu-dialog[data-panel="progreso"] .save-reset-confirmation p{font-size:13px;margin:0 0 14px;line-height:1.5}
+.save-reset-confirmation>div{display:flex;justify-content:flex-end;flex-wrap:wrap;gap:10px}
+#confirm-reset-save{background:var(--coral);color:#101820;border-color:var(--coral)}
+@media(max-width:700px){
+ .save-actions{grid-template-rows:none;flex:0 0 auto}
+ .save-action{grid-template-columns:48px minmax(0,1fr);gap:14px;padding:16px}
+ .save-action-copy h3{font-size:21px}
+ #menu-dialog[data-panel="progreso"] .save-action .progress-emblem svg{width:38px;height:38px}
+ #menu-dialog[data-panel="progreso"] .save-action-button{grid-column:1/-1;min-height:42px}
+ .save-reset-confirmation{padding:12px}
+ .save-reset-confirmation>div{flex-direction:column}
+ .save-reset-confirmation button{width:100%}
+}
+
+/* Archivo táctico: ilustraciones vectoriales originales y acciones diferenciadas. */
+.save-inventory-summary{display:flex;flex-wrap:wrap;gap:6px}
+.save-inventory-summary>span{padding:6px 10px;border:1px solid #3b5263;background:#132735;font:11px monospace;color:var(--muted)}
+.save-inventory-summary b{color:var(--ivory);font-size:13px}
+.save-action{--save-accent:#8ce0df;position:relative;isolation:isolate;grid-template-columns:160px minmax(0,1fr) minmax(170px,.55fr);padding:18px 26px 18px 10px;gap:24px;border-left:0;border-top:1px solid color-mix(in srgb,var(--save-accent) 60%,#344959);background:linear-gradient(110deg,#223e4e 0,#142936 36%,#101e2c 100%);clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,0 100%)}
+.save-action::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(135deg,transparent 72%,#8ce0df05 72%,#8ce0df05 82%,transparent 82%),repeating-linear-gradient(0deg,transparent 0 23px,#8ce0df03 23px 24px);border-left:3px solid var(--save-accent)}
+.save-action::after{content:"";position:absolute;bottom:0;left:0;width:70px;height:2px;background:var(--save-accent);pointer-events:none}
+.save-upload{--save-accent:#baa3ff;background:linear-gradient(110deg,#302e4c 0,#1b283a 36%,#101e2c 100%)}
+.save-action.save-reset{--save-accent:#ff6374;border-left:0;background:linear-gradient(110deg,#482936 0,#282333 36%,#171f2c 100%)}
+.save-art{align-self:stretch;display:flex;align-items:center;justify-content:center;min-width:0;position:relative;color:var(--save-accent);background:radial-gradient(ellipse,color-mix(in srgb,var(--save-accent) 13%,transparent),transparent 68%)}
+.save-art svg{width:160px;height:155px;max-width:100%;overflow:visible}
+.save-art-orbit{opacity:.28;stroke-dasharray:18 5 2 5}
+.save-art-grid{opacity:.08;stroke-width:1}
+.save-art-bright{stroke:var(--ivory);stroke-width:2.5}
+.save-file-tag{display:block;font:9px monospace;letter-spacing:1.5px;color:var(--save-accent);margin-bottom:9px}
+.save-action-copy h3{font-size:29px;letter-spacing:.2px;margin-bottom:10px;color:var(--ivory)}
+#menu-dialog[data-panel="progreso"] .save-action-copy p{max-width:48ch;line-height:1.6;color:#acbbc8}
+#menu-dialog[data-panel="progreso"] .save-action-button{justify-content:space-between;gap:14px;min-height:52px;border-color:var(--save-accent);transition:background .15s,border-color .15s,transform .15s}
+#menu-dialog[data-panel="progreso"] .save-download .save-action-button{background:var(--save-accent);color:#10232e;font-weight:700}
+#menu-dialog[data-panel="progreso"] .save-upload .save-action-button{background:#baa3ff10;color:#e0d5ff}
+#menu-dialog[data-panel="progreso"] .save-action-button>span[aria-hidden]{font-size:22px;line-height:1}
+#menu-dialog[data-panel="progreso"] .save-action-button:hover:not(:disabled){transform:translateY(-2px);background:var(--save-accent);color:#10232e;border-color:var(--save-accent)}
+#menu-dialog[data-panel="progreso"] .save-reset>.save-action-button{justify-content:center;background:#ff637410;color:#ffb2bc;border-color:#d76a78}
+#menu-dialog[data-panel="progreso"] .save-reset>.save-action-button:hover{background:#ff6374;color:#171f2c}
+.save-reset-confirmation{margin-left:16px}
+@media(max-width:850px){
+ .save-action{grid-template-columns:110px minmax(0,1fr);padding:16px;gap:12px 18px}
+ .save-art{grid-row:1/3;grid-column:1}
+ .save-art svg{width:110px;height:125px}
+ .save-action-copy{grid-column:2}
+ #menu-dialog[data-panel="progreso"] .save-action-button{grid-column:2;min-height:44px}
+ .save-action-copy h3{font-size:25px}
+ .save-reset-confirmation{margin-left:0}
+}
+@media(max-width:420px){
+ .save-action{grid-template-columns:56px minmax(0,1fr);gap:14px 10px;padding:14px 12px}
+ .save-art{grid-row:1;align-self:start}
+ .save-art svg{width:56px;height:72px}
+ .save-file-tag{font-size:8px;letter-spacing:.8px}
+ .save-action-copy h3{font-size:21px}
+ #menu-dialog[data-panel="progreso"] .save-action-button{grid-column:1/-1;min-height:44px}
+ .save-inventory-summary{gap:4px}
+ .save-inventory-summary>span{padding:5px 6px;font-size:10px}
+ .save-inventory-summary b{font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){#menu-dialog[data-panel="progreso"] .save-action-button{transition:none}#menu-dialog[data-panel="progreso"] .save-action-button:hover:not(:disabled){transform:none}}
+@media(min-width:851px){.save-art svg{height:140px}}
+
+/* Confirmación emergente: borrar requiere una pulsación continua. */
+#reset-confirm-dialog{box-sizing:border-box;width:min(500px,calc(100vw - 24px));max-height:calc(100dvh - 24px);overflow:auto;padding:28px;background:linear-gradient(145deg,#2b2230,#101e2b 65%);color:var(--ivory);border:1px solid #815262;border-top:3px solid var(--coral);box-shadow:0 24px 90px #0009}
+#reset-confirm-dialog::backdrop{background:#030b14ce;backdrop-filter:blur(5px)}
+.reset-warning-mark{display:flex;align-items:center;justify-content:center;width:42px;height:42px;border:1px solid var(--coral);color:var(--coral);font:700 28px monospace;clip-path:var(--cut);background:#ff586510}
+#reset-confirm-dialog h2{margin:18px 0 12px;font-size:28px}
+#reset-confirm-dialog p{font-size:14px;line-height:1.6;color:var(--muted)}
+#reset-confirm-dialog .reset-hold-help{color:var(--ivory);font-size:13px;margin:20px 0}
+.reset-dialog-actions{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.reset-dialog-actions button{min-height:46px;font-size:14px;padding:10px;min-width:0}
+#confirm-reset-save{position:relative;isolation:isolate;overflow:hidden;background:#ff586514;border:1px solid var(--coral);color:#ffd6dc;user-select:none;touch-action:none;-webkit-user-select:none}
+#confirm-reset-save>span:last-child{position:relative;z-index:1}
+#reset-hold-fill{position:absolute;inset:0 auto 0 0;width:0;background:#c33448;z-index:0;pointer-events:none}
+#reset-confirm-dialog #reset-hold-status{min-height:20px;margin:12px 0 0;font-size:12px;color:var(--coral)}
+@media(max-width:360px),(max-height:450px){#reset-confirm-dialog{padding:16px}#reset-confirm-dialog h2{font-size:23px;margin:12px 0}#reset-confirm-dialog p{font-size:12px}.reset-warning-mark{width:30px;height:30px;font-size:22px}}
+
+/* Prestigio: recompensas que sobreviven a cada reinicio. */
+.prestige-workshop{padding-top:18px;border-top:1px solid var(--line)}
+.prestige-workshop-heading{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.prestige-workshop-heading h3{font-size:23px;margin:0}
+.prestige-workshop-heading>span{font:12px monospace;color:var(--ice)}
+.prestige-upgrades{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.prestige-upgrades>article{display:flex;flex-direction:column;gap:10px;padding:16px;background:#142532;border:1px solid var(--line);border-top:2px solid #f3cd71;min-width:0}
+.prestige-upgrades img{width:40px;height:40px;object-fit:contain}
+.prestige-upgrades h4{font-size:17px;margin:0}
+#menu-dialog[data-panel="progreso"] .prestige-upgrades p{font-size:12px;line-height:1.5;margin:0}
+.prestige-upgrades article>div{display:grid;gap:10px;margin-top:auto;font:11px monospace;color:var(--muted)}
+.prestige-upgrades button{font-size:12px;padding:9px;margin:0;min-height:36px}
+#menu-dialog[data-panel="progreso"] .prestige-requirement{margin-top:10px;font-size:11px;color:#f3cd71}
+.save-action.save-reset{--save-accent:#f3cd71;background:linear-gradient(110deg,#423626 0,#282936 36%,#171f2c 100%)}
+#menu-dialog[data-panel="progreso"] .save-reset>.save-action-button{border-color:#bd9b57;color:#ffe0a3;background:#f3cd7110}
+#menu-dialog[data-panel="progreso"] .save-reset>.save-action-button:disabled{cursor:default;opacity:.5}
+#menu-dialog[data-panel="progreso"] .save-reset>.save-action-button:hover:not(:disabled){background:#f3cd71;color:#171f2c}
+@media(max-width:850px){.prestige-upgrades{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:420px){.prestige-upgrades{grid-template-columns:minmax(0,1fr)}}

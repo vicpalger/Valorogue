@@ -133,7 +133,7 @@ function shoot() { return fireWeapon(); }
 function finishRun(manual = false) {
     if (rewardPaid) return 0;
     rewardPaid = true;
-    const reward = Math.floor((10 + Math.floor(elapsed / 5) + Math.floor(kills / 2))*difficulty().reward);
+    const reward = Math.floor((10 + Math.floor(elapsed / 5) + Math.floor(kills / 2))*difficulty().reward*(1+.05*meta.prestige.upgrades.reward));
     settleExpansion(state==='won',manual);
     const loss = manual ? Math.ceil((runCoins + reward) / 2) : 0;
     progress.coins += reward - loss; progress.best = Math.max(progress.best, kills); best = progress.best;
@@ -293,13 +293,13 @@ function saveProgress() {
     catch { document.getElementById('save-status').textContent='No se ha podido guardar: el progreso durará hasta cerrar esta página.'; }
     updateWallet();
 }
-function applyProgress() { const u=progress.upgrades;player.max+=20*u.health;player.hp=player.max;player.damage=selectedWeapon().damage+u.damage;player.speed*=1+u.speed*.1;player.rate=selectedWeapon().rate*Math.pow(.92,u.rate);player.creditChance=.25+.05*(u.credits||0);player.pickupRadius+=20*(u.pickup||0); }
+function applyProgress() { const u=progress.upgrades;player.max+=20*u.health+10*meta.prestige.upgrades.health;player.hp=player.max;player.damage=selectedWeapon().damage+u.damage;player.speed*=(1+u.speed*.1)*(1+.02*meta.prestige.upgrades.speed);player.rate=selectedWeapon().rate*Math.pow(.92,u.rate);player.creditChance=.25+.05*(u.credits||0);player.pickupRadius+=20*(u.pickup||0)+10*meta.prestige.upgrades.pickup; }
 function showGame() { document.querySelector('.hud .stats').appendChild(ui.pause); document.getElementById('how-to-play').open=false; menuDialog.close(); initialLobby.hidden = true; document.body.classList.remove('in-menu'); lobby.hidden = true; navigation.hidden = true; playArea.hidden = false; resize(); }
 function heroSummary(hero){
     const u=progress.upgrades;
-    const hp=100+20*u.health;
+    const hp=100+20*u.health+10*meta.prestige.upgrades.health;
     const damage=selectedWeapon().damage+u.damage;
-    const speed=Math.round(210*(1+u.speed*.1));
+    const speed=Math.round(210*(1+u.speed*.1)*(1+.02*meta.prestige.upgrades.speed));
     return `<div class="hero-summary"><span>Vida <strong>${hp} PV</strong></span><span>Daño <strong>${damage}</strong></span><span>Velocidad <strong>${speed} px/s</strong></span></div>`;
 }
 function permanentPreview(upgrade){
@@ -311,7 +311,7 @@ function permanentPreview(upgrade){
             case 'speed':return `+${level*10} %`;
             case 'rate':return `${(1/(selectedWeapon().rate*Math.pow(.92,level))).toFixed(1)} /s`;
             case 'credits':return `${25+level*5} %`;
-            case 'pickup':return `${100+level*20} px`;
+            case 'pickup':return `${100+level*20+10*meta.prestige.upgrades.pickup} px`;
             case 'reload':return selectedWeapon().magazine?`${(selectedWeapon().reload*Math.pow(.95,level)).toFixed(2)} s`:`−${((1-Math.pow(.95,level))*100).toFixed(1)} %`;
             case 'ability':return `${(activeHero().cooldown*Math.pow(.95,level)).toFixed(1)} s`;
         }
@@ -360,14 +360,20 @@ function updateSummonControls(){
     select.value=String(summonCount);select.disabled=isSummoning;
     button.disabled=isSummoning||progress.coins<cost;
     button.textContent=`Invocar · KC ${cost}`;
+    document.querySelectorAll('[data-ticket]').forEach(b=>{b.disabled=isSummoning||!(meta.tickets[b.dataset.ticket]>0);});
     if(funds){funds.hidden=isSummoning||progress.coins>=cost;funds.textContent=progress.coins<cost?`Te faltan ${cost-progress.coins} KC.`:'';}
 }
-async function summon(count=summonCount){
-    if(![1,2,3,4,5].includes(count)||isSummoning||state!=='menu'||progress.coins<GACHA_COST*count)return null;
+function rollTicketHero(ticket){
+ const pool=heroes.filter(h=>rarityTiers.findIndex(r=>r.name===h.rarity)>=(ticket==='ultra'?4:3));
+ let roll=Math.random()*pool.reduce((sum,h)=>sum+h.chance,0);for(const h of pool){roll-=h.chance;if(roll<0)return h;}return pool[pool.length-1];
+}
+async function summon(count=summonCount,ticket=null){
+    if(![1,2,3,4,5].includes(count)||isSummoning||state!=='menu')return null;
+    if(ticket){if(!['legendary','ultra'].includes(ticket)||count!==1||!(meta.tickets[ticket]>0))return null;}else if(progress.coins<GACHA_COST*count)return null;
     summonCount=count;
-    const rewards=[];progress.coins-=GACHA_COST*count;
+    const rewards=[];if(ticket){meta.tickets[ticket]--;saveMeta();}else progress.coins-=GACHA_COST*count;
     for(let i=0;i<count;i++){
-        const hero=rollHero(),duplicate=progress.owned.includes(hero.id);
+        const hero=ticket?rollTicketHero(ticket):rollHero(),duplicate=progress.owned.includes(hero.id);
         if(duplicate)progress.coins+=20;else progress.owned.push(hero.id);
         rewards.push({hero,duplicate});
     }
@@ -429,11 +435,12 @@ function showMenu(tab = 'jugar') {
     if(tab==='progreso')lobby.innerHTML=progressionScreen();
     if (tab === 'inventario') lobby.innerHTML = `<h1>Inventario</h1>${sessionUnlocks?'<p class="konami-note" role="status">Código Konami activado: todos los agentes y armas disponibles hasta recargar la página.</p>':''}${inventoryTabs()}${inventoryPage==='weapons'?weaponInventory():agentCollection(heroes.filter(h => hasAgent(h.id)),true)}`;
     if (tab === 'mejoras') lobby.innerHTML = `<h1>Mejoras permanentes</h1><nav class="permanent-pages" aria-label="Grupos de mejoras"><button data-permanent-page="0" aria-pressed="${permanentPage===0}">Combate</button><button data-permanent-page="1" aria-pressed="${permanentPage===1}">Recursos y equipo</button></nav><div class="collection">${permanent.slice(permanentPage*4,permanentPage*4+4).map(u => { const n = progress.upgrades[u.id]||0, cost = upgradeCost(u); return `<article class="hero-card permanent-card"><span class="upgrade-icon" aria-hidden="true">${upgradeIcon(u)}</span><h2>${u.name}</h2><p>${u.desc}</p>${permanentPreview(u)}<button data-buy="${u.id}" ${n >= u.max || progress.coins < cost ? 'disabled' : ''}>${n >= u.max ? 'Al máximo' : `Mejorar · KC ${cost}`}</button></article>`; }).join('')}</div>`;
-    if (tab === 'gacha') lobby.innerHTML = `<h1>Gacha</h1><div class="gacha-actions"><label for="summon-count"><select id="summon-count" aria-label="Cantidad de invocaciones">${[1,2,3,4,5].map(n=>`<option value="${n}" ${n===summonCount?'selected':''}>${n}</option>`).join('')}</select></label><button id="summon" class="primary">Invocar</button></div><p id="gacha-funds" role="status"></p><details class="gacha-info"><summary>Probabilidades</summary><div class="gacha-probabilities"><p>Común 60 % · Raro 25 % · Épico 10 % · Legendario 4 % · Ultralegendario 1 %.</p><p>Cada rareza reparte su probabilidad entre 6 agentes. Los repetidos devuelven 20 KC.</p></div></details>${agentCollection(heroes,false)}`;
+    if (tab === 'gacha') lobby.innerHTML = `<h1>Gacha</h1><div class="gacha-actions"><label for="summon-count"><select id="summon-count" aria-label="Cantidad de invocaciones">${[1,2,3,4,5].map(n=>`<option value="${n}" ${n===summonCount?'selected':''}>${n}</option>`).join('')}</select></label><button id="summon" class="primary">Invocar</button></div><p id="gacha-funds" role="status"></p>${ticketControls()}<details class="gacha-info"><summary>Probabilidades</summary><div class="gacha-probabilities"><p>Común 60 % · Raro 25 % · Épico 10 % · Legendario 4 % · Ultralegendario 1 %.</p><p>Cada rareza reparte su probabilidad entre 6 agentes. Los repetidos devuelven 20 KC.</p></div></details>${agentCollection(heroes,false)}`;
     const changeAgent=document.getElementById('home-agent-select');if(changeAgent)changeAgent.onchange=()=>equipHero(changeAgent.value);
     const changeWeapon=document.getElementById('change-home-weapon');if(changeWeapon)changeWeapon.onclick=()=>{inventoryPage='weapons';showMenu('inventario');};
     bindAgentFilters(); bindWeaponMenu();if(tab==='progreso')bindProgression();
     if (isPanel) { menuDialog.setAttribute('aria-label', tab[0].toUpperCase() + tab.slice(1)); if (!menuDialog.open) menuDialog.showModal(); }
+    lobby.querySelectorAll('[data-ticket]').forEach(b=>b.onclick=()=>summon(1,b.dataset.ticket));
     const summonButton = document.getElementById('summon'); if (summonButton) {summonButton.onclick=()=>summon();document.getElementById('summon-count').onchange=event=>{summonCount=Number(event.target.value);updateSummonControls();};updateSummonControls();}
     lobby.querySelectorAll('[data-equip]').forEach(b => b.onclick = () => equipHero(b.dataset.equip));
     lobby.querySelectorAll('[data-permanent-page]').forEach(b=>b.onclick=()=>{permanentPage=Number(b.dataset.permanentPage);showMenu('mejoras');});

@@ -81,6 +81,7 @@ function weaponInventory(){return `<div class="collection-scroll" tabindex="0" r
 function layoutShop(){
  const grid=document.querySelector('#menu-dialog[data-panel="tienda"] .weapon-collection');if(!grid)return;
  const columns=innerWidth<600?1:innerWidth<900?2:3,rows=innerHeight>=800&&innerWidth>=600?2:1,size=columns*rows;
+ grid.style.gridTemplateRows=`repeat(${rows},minmax(0,1fr))`;
  const cards=[...grid.children],pages=Math.ceil(cards.length/size);shopPage=Math.max(0,Math.min(shopPage,pages-1));
  grid.style.gridTemplateColumns=`repeat(${columns},minmax(0,1fr))`;
  cards.forEach((card,i)=>card.hidden=i<shopPage*size||i>=(shopPage+1)*size);

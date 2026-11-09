@@ -116,7 +116,7 @@ El inicio muestra la preparación de despliegue con un retrato grande del agente
 - Maestría independiente por agente: 1 XP por baja, 1 por cada 10 segundos y 50 por jefe. Cinco niveles de 250 XP; aspectos Coral en nivel 2 y Glacial en nivel 4. Los aspectos cambian el color, sin ventajas estadísticas. Abandonar reduce a la mitad la XP de maestría.
 - Veterano se desbloquea al ganar en Normal; Pesadilla al ganar en Veterano. Modifican vida, velocidad y frecuencia enemiga, con +30 % / +60 % de recompensa final. Se eligen antes de empezar.
 - El informe final muestra daño causado/recibido, precisión por proyectil, bajas con poderes, jefes, dificultad, mejoras y evoluciones. La pausa permite consultar la build.
-- Exportación/importación JSON de personajes, armas, créditos, mejoras y metaprogresión. Importar una copia válida sustituye el guardado y recarga la web; los formatos incorrectos se rechazan. El progreso previo sigue usando chispa-progress; la ampliación usa chispa-meta-v1. La metaprogresión de combate se guarda al terminar la partida.
+- Exportación/importación protegida `.valorogue` de personajes, armas, créditos, mejoras y metaprogresión. Importar una copia válida sustituye el guardado y recarga la web; los formatos incorrectos se rechazan. El progreso previo sigue usando chispa-progress; la ampliación usa chispa-meta-v1. La metaprogresión de combate se guarda al terminar la partida.
 
 Toda la ampliación está en `expansion.js` y se integra con el Canvas existente. Los proyectiles enemigos y avisos tienen límites de cantidad, comparten las colisiones del terreno y sus tiempos se congelan al pausar. No se añade audio ni dependencias.
 
@@ -155,3 +155,28 @@ En Gacha e Inventario la cabecera y los filtros permanecen fijos; solo se despla
 `agent-builds.js` añade Q a los 30 agentes y 120 mejoras exclusivas (2–6 por agente según rareza). Cada nivel y renovación tiene un 25 % de probabilidad de ofrecer una opción exclusiva junto a las mejoras normales. Cada exclusiva se elige una vez, dura esa partida y respeta el límite de rareza. La ficha i muestra las tres habilidades y el catálogo de mejoras. Jett puede combinar sus dos mejoras propias con Vendaval.
 
 La Q se activa con la tecla Q o su botón, tiene su propia recarga y comparte la franja reservada del HUD con el arma, E y X. Cámara/ancla de Q y marca de E son independientes y se recolocan al redimensionar. Las mejoras normales de recarga de E no reducen Q; Técnica ágil sí lo hace. Consulta PERSONAJES.md para los efectos y costes actuales.
+
+
+## Copias protegidas
+
+`save-backup.js` cifra y autentica las copias con AES-256-GCM mediante Web Crypto, IV aleatorio de 96 bits por exportación y etiqueta de 128 bits. Requiere HTTPS o localhost; no descarga una copia sin protección si Web Crypto no está disponible. El formato v2 autentica también una cabecera fija del protocolo. Antes de escribir en localStorage se verifica el cifrado y se validan los datos; un fallo al escribir intenta restaurar ambos valores anteriores.
+
+Las copias `.valorogue` funcionan entre navegadores y dispositivos sin contraseña. El progreso local actual se conserva. Los JSON v1 dejan de aceptarse: para migrar, descarga una copia nueva desde el navegador que conserva el progreso. Mantener una vía de importación JSON permitiría eludir la comprobación.
+
+Es una barrera contra la edición casual del archivo, no un sistema antitrampas: la clave v2 se distribuye en el código y debe conservarse para abrir copias futuras. Alguien con control del navegador puede extraerla, generar nuevas copias, modificar localStorage o el propio juego. Tampoco evita restaurar copias anteriores. Para validar los objetos ganados de forma fiable hace falta un servidor. No sustituir la clave v2 sin mantener un lector de versiones anteriores.
+
+Referencia: [Web Crypto AES-GCM](https://developer.mozilla.org/en-US/docs/Web/API/AesGcmParams).
+
+
+## Misiones semanales
+
+Misiones muestra las diarias y, debajo, las semanales en la misma pestaña. Las semanales acumulan 3000 bajas, 120 minutos, 15 jefes y 5 victorias; las tres primeras dan un ticket legendario+ cada una y las victorias dan un ticket ultralegendario. Se renuevan el lunes a las 00:00 de Europe/Madrid. Los tickets sin gastar no caducan con el cambio de semana.
+
+Los tickets se canjean de uno en uno en Gacha, sin KC. Legendario+ usa las probabilidades relativas de las rarezas admitidas (80 % legendario, 20 % ultralegendario); el otro garantiza ultralegendario. Pueden salir repetidos, con el reembolso habitual de 20 KC. El gacha ordinario mantiene su coste y probabilidades. Contadores y tickets se incluyen en las copias protegidas; el progreso de las misiones se guarda cada 15 segundos de combate, al terminar y al salir de la página. Sigue siendo progreso local, sujeto a las limitaciones de restaurar copias antiguas y cambiar el reloj del equipo.
+
+
+## Prestigio: reiniciar para mejorar
+
+Progreso → Guardado sustituye el borrado total por un ascenso de prestigio. Requiere una victoria completa de 15 minutos nueva desde el último ascenso; las victorias ya obtenidas habilitan el primero. Cada ascenso consume esa oportunidad (registra el total de victorias actual), entrega 1 punto y reinicia solo los KC y las mejoras compradas con KC. Conserva agentes, armas, equipo seleccionado, maestría, aspectos, dificultades, récords, misiones, tickets y las mejoras de prestigio. El Konami temporal se desactiva. La confirmación requiere mantener «Sí, ascender» durante dos segundos y se puede cancelar soltando, con Escape o Cancelar.
+
+Cada nivel cuesta 1 punto: Vitalidad superior +10 PV iniciales, Reflejos superiores +2 % de velocidad, Atracción superior +10 px de recogida de XP, Recompensa superior +5 % de KC finales. Diez niveles por mejora, máximo 40 ascensos. No multiplica los KC recogidos, las misiones ni los reembolsos de repetidos; la penalización por abandonar se mantiene. Los bonus se aplican al iniciar la partida y se suman o multiplican con las mejoras normales según su descripción. Las compras de prestigio permanecen tras ascender y se incluyen en las copias protegidas; guardados anteriores comienzan en prestigio 0 sin perder sus datos.

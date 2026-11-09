@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="hud-layout.css">
     <link rel="stylesheet" href="gacha.css">
     <link rel="stylesheet" href="agent-builds.css">
+    <link rel="stylesheet" href="menu-windows.css?v=prestige-11">
 </head>
 
 <body>
@@ -41,6 +42,14 @@
     <dialog id="menu-dialog" aria-label="Panel del menú"><button id="close-panel" class="close-panel">✕ Cerrar</button><section id="menu-content"></section></dialog>
     <dialog id="agent-info-dialog" aria-labelledby="agent-info-title"><button id="close-agent-info" class="close-panel" type="button" aria-label="Cerrar información del agente">✕ Cerrar</button><section id="agent-info-content"></section></dialog>
     <p id="save-status" role="status"></p>
+    <dialog id="reset-confirm-dialog" aria-labelledby="reset-confirm-title" aria-describedby="reset-confirm-description">
+      <span class="reset-warning-mark" aria-hidden="true">!</span>
+      <h2 id="reset-confirm-title">¿Ascender de prestigio?</h2>
+      <p id="reset-confirm-description">Ganarás 1 punto de prestigio. Tus KC y mejoras compradas volverán a cero. Conservarás agentes, armas, maestría, dificultades, misiones, tickets, récords y mejoras de prestigio.</p>
+      <p class="reset-hold-help">Mantén «Sí, ascender» durante 2 segundos para confirmar.</p>
+      <div class="reset-dialog-actions"><button id="cancel-reset-save" type="button" autofocus>Cancelar</button><button id="confirm-reset-save" type="button"><span id="reset-hold-fill" aria-hidden="true"></span><span>Sí, ascender</span></button></div>
+      <p id="reset-hold-status" role="status" aria-live="polite"></p>
+    </dialog>
     <script src="agents.js"></script>
     <script src="pixel-art.js"></script>
     <script src="maps.js"></script>
@@ -50,7 +59,8 @@
     <script src="weapons.js"></script>
     <script src="weapon-art.js"></script>
     <script src="ultimates.js"></script>
-    <script src="expansion.js"></script>
+    <script src="save-backup.js?v=prestige-11"></script>
+    <script src="expansion.js?v=prestige-11"></script>
     <script src="combat-art.js"></script>
     <script src="agent-builds.js"></script>
     <script src="game.js"></script>
